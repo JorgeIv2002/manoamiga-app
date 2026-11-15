@@ -230,7 +230,9 @@ export default function HomePage() {
               };
             }
           );
-          setSolucionadores([...mappedPerfiles, ...INITIAL_SOLUCIONADORES]);
+              setSolucionadores(mappedPerfiles);
+        } else {
+          setSolucionadores([]);
         }
 
         if (solicitudesRes.data && solicitudesRes.data.length > 0) {
@@ -261,7 +263,9 @@ export default function HomePage() {
                   | "Resuelta") || "Abierto",
               fromSupabase: true,
             }));
-          setProblemas([...mappedSolicitudes, ...INITIAL_PROBLEMAS]);
+          setProblemas(mappedSolicitudes);
+        } else {
+          setProblemas([]);
         }
       }
     } catch {
@@ -490,7 +494,7 @@ export default function HomePage() {
         setProblemas((prev) => [savedProblema, ...prev]);
         setDbConnected(true);
         setHelpSaveStatus(
-          "¡Guardado exitosamente en la tabla 'solicitudes_ayuda' de Supabase!"
+          "¡Tu solicitud ya fue publicada en el Muro Vecinal!"
         );
       }
     } catch {
@@ -637,7 +641,7 @@ export default function HomePage() {
         setSolucionadores((prev) => [savedSol, ...prev]);
         setDbConnected(true);
         setRegSaveStatus(
-          "¡Tu perfil se guardó exitosamente en la tabla 'perfiles' de Supabase!"
+          "¡Tu perfil ya está activo en el Directorio de Solucionadores!"
         );
       }
     } catch {
@@ -712,47 +716,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#18181B] pb-24 md:pb-0">
-      {/* TOP EDITORIAL TRUST BAR (Warm Forest #0F4C3A) */}
-      <div className="bg-[#0F4C3A] text-[#F5F4F0] text-xs py-2.5 px-4 border-b border-[#0B3B2D]">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1.5 text-[#E6F2EE] font-medium">
-              <ShieldCheck strokeWidth={1.75} className="w-3.5 h-3.5" />
-              Comunidad verificada en Nuevo León
-            </span>
-            <span className="hidden sm:inline text-[#E6F2EE]/40">•</span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0B3B2D] border border-white/10 text-[11px]">
-              <Database strokeWidth={1.75} className="w-3 h-3 text-[#E6F2EE]" />
-              {isLoadingDb ? (
-                <span className="text-[#E6F2EE]/80">
-                  Sincronizando directorio en vivo...
-                </span>
-              ) : dbConnected ? (
-                <span className="text-[#E6F2EE] font-medium">
-                  Base de datos en tiempo real activa
-                </span>
-              ) : (
-                <span
-                  className="text-amber-200"
-                  title={
-                    dbErrorHint ||
-                    "Ejecuta supabase_schema.sql en el SQL Editor de Supabase"
-                  }
-                >
-                  Modo demostración activo
-                </span>
-              )}
-            </span>
-          </div>
-          <div className="flex items-center gap-4 tabular-nums">
-            <span className="inline-flex items-center gap-1.5 text-[#E6F2EE]">
-              <span className="w-2 h-2 rounded-full bg-[#D95D39] animate-pulse" />
-              Respuesta promedio en MTY: <strong>8 min</strong>
-            </span>
-          </div>
-        </div>
-      </div>
-
       {/* STICKY EDITORIAL NAVBAR */}
       <header className="sticky top-0 z-40 bg-[#FAFAF9]/90 backdrop-blur-md border-b border-[#E7E5E4]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -1185,7 +1148,7 @@ export default function HomePage() {
                       : "bg-white text-[#57534E] border border-[#E7E5E4]"
                   }`}
                 >
-                  150
+                  {solucionadores.length}
                 </span>
               </div>
               <div>
@@ -1206,6 +1169,9 @@ export default function HomePage() {
 
             {CATEGORIES.map((cat) => {
               const isSelected = selectedCategory === cat.id;
+              const realCount = solucionadores.filter(
+                (s) => s.category === cat.id
+              ).length;
               return (
                 <button
                   key={cat.id}
@@ -1235,7 +1201,7 @@ export default function HomePage() {
                           : "bg-[#F5F4F0] text-[#57534E] border border-[#E7E5E4]"
                       }`}
                     >
-                      {cat.count}
+                      {realCount}
                     </span>
                   </div>
                   <div>
@@ -1329,28 +1295,45 @@ export default function HomePage() {
             ))}
           </div>
         ) : filteredSolucionadores.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] p-12 text-center shadow-bento">
-            <Filter
-              strokeWidth={1.75}
-              className="w-10 h-10 text-[#57534E] mx-auto mb-3"
-            />
-            <h3 className="font-display text-lg font-bold text-[#18181B]">
-              No encontramos solucionadores con ese filtro exacto
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] p-12 text-center shadow-bento max-w-2xl mx-auto">
+            <div className="w-14 h-14 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] flex items-center justify-center mx-auto mb-4">
+              <UserPlus strokeWidth={1.75} className="w-7 h-7" />
+            </div>
+            <h3 className="font-display text-xl font-extrabold text-[#18181B]">
+              {solucionadores.length === 0
+                ? "Sé de los primeros Solucionadores en Nuevo León"
+                : "No encontramos solucionadores con ese filtro"}
             </h3>
-            <p className="text-sm text-[#57534E] mt-1 mb-5">
-              Prueba mostrando todas las categorías o publica tu necesidad para
-              que te contacten directamente.
+            <p className="text-sm text-[#57534E] mt-2 mb-6 max-w-md mx-auto leading-relaxed">
+              {solucionadores.length === 0
+                ? "Estamos abriendo el directorio oficial sin perfiles de relleno. Si tienes un oficio o habilidad práctica, regístrate gratis hoy y aparece en primera fila."
+                : "Prueba mostrando todas las categorías o publica tu necesidad para que te contacten directamente."}
             </p>
-            <button
-              onClick={() => {
-                setSelectedCategory("todos");
-                setSearchQuery("");
-                setOnlyAvailableToday(false);
-              }}
-              className="px-5 py-2.5 rounded-2xl bg-[#0F4C3A] text-white text-sm font-bold hover:bg-[#0B3B2D]"
-            >
-              Restablecer filtros
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <button
+                onClick={() => {
+                  setRegSuccess(false);
+                  setRegSaveStatus(null);
+                  setIsRegisterSolucionadorOpen(true);
+                }}
+                className="px-6 py-3 rounded-2xl bg-[#0F4C3A] text-white text-sm font-bold hover:bg-[#0B3B2D] inline-flex items-center gap-2"
+              >
+                <UserPlus strokeWidth={1.75} className="w-4 h-4" />
+                Registrarme como Solucionador
+              </button>
+              {solucionadores.length > 0 && (
+                <button
+                  onClick={() => {
+                    setSelectedCategory("todos");
+                    setSearchQuery("");
+                    setOnlyAvailableToday(false);
+                  }}
+                  className="px-5 py-3 rounded-2xl bg-[#F5F4F0] text-[#18181B] text-sm font-semibold hover:bg-[#E7E5E4]"
+                >
+                  Ver todas las categorías
+                </button>
+              )}
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
@@ -1568,8 +1551,29 @@ export default function HomePage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            {filteredProblemas.map((prob) => {
+          {filteredProblemas.length === 0 ? (
+            <div className="bg-[#FAFAF9] text-[#18181B] rounded-3xl p-10 text-center max-w-xl mx-auto">
+              <h3 className="font-display text-xl font-extrabold mb-2">
+                Aún no hay problemas publicados en esta vista
+              </h3>
+              <p className="text-sm text-[#57534E] mb-6">
+                ¿Necesitas arreglar algo en casa, ayuda con limpieza, un flete o
+                un mandado hoy? Publica tu solicitud gratis en menos de 1 minuto.
+              </p>
+              <button
+                onClick={() => {
+                  resetHelpWizard();
+                  setIsPedirAyudaModalOpen(true);
+                }}
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm"
+              >
+                <PlusCircle strokeWidth={1.75} className="w-4 h-4" />
+                Publicar el primer problema
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              {filteredProblemas.map((prob) => {
               const isUrgent = prob.urgency === "Urgente (Hoy)";
               return (
                 <div
@@ -1696,7 +1700,8 @@ export default function HomePage() {
                 </div>
               );
             })}
-          </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -2183,7 +2188,7 @@ export default function HomePage() {
 
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6F2EE] text-[#0F4C3A] text-xs font-bold mb-3">
               <ShieldCheck strokeWidth={1.75} className="w-3.5 h-3.5" /> Acceso
-              Seguro con Supabase Auth
+              Seguro a ManoAmiga
             </div>
 
             <h3 className="font-display text-2xl font-extrabold text-[#18181B] mb-1">
