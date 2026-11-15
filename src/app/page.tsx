@@ -33,7 +33,6 @@ import {
   LogOut,
   User,
   Database,
-  Loader2,
 } from "lucide-react";
 import {
   CATEGORIES,
@@ -96,7 +95,7 @@ export default function HomePage() {
   const [helpUrgency, setHelpUrgency] = useState<
     "Urgente (Hoy)" | "En 24-48 hrs" | "Fecha flexible"
   >("Urgente (Hoy)");
-  const [helpBudget, setHelpBudget] = useState("$300 - $500 MXN");
+  const [helpBudget, setHelpBudget] = useState("$350 - $500 MXN");
   const [helpClientName, setHelpClientName] = useState("");
   const [helpSubmitting, setHelpSubmitting] = useState(false);
   const [helpSubmittedSuccess, setHelpSubmittedSuccess] = useState(false);
@@ -161,7 +160,6 @@ export default function HomePage() {
       ]);
 
       if (perfilesRes.error || solicitudesRes.error) {
-        // Likely tables haven't been created yet via supabase_schema.sql
         setDbConnected(false);
         setDbErrorHint(
           perfilesRes.error?.message ||
@@ -172,7 +170,6 @@ export default function HomePage() {
         setDbConnected(true);
         setDbErrorHint(null);
 
-        // Map reviews by perfil_id
         const reviewsByPerfil: Record<string, ReviewItem[]> = {};
         if (resenasRes.data) {
           for (const r of resenasRes.data) {
@@ -206,16 +203,17 @@ export default function HomePage() {
                 id: idStr,
                 name: String(row.name || "Solucionador"),
                 role: String(row.role || "Especialista"),
-                category: (row.category as Exclude<CategoryId, "todos">) || "hogar",
-                categoryLabel: String(row.category_label || "Hogar"),
+                category:
+                  (row.category as Exclude<CategoryId, "todos">) || "hogar",
+                categoryLabel: String(row.category_label || "Hogar y Climas"),
                 rating: Number(row.rating) || 5.0,
                 reviewsCount: rowReviews.length,
                 completedJobs: Number(row.completed_jobs) || 1,
-                hourlyRate: String(row.hourly_rate || "$250 MXN"),
+                hourlyRate: String(row.hourly_rate || "$350 MXN"),
                 responseTime: String(
                   row.response_time || "Responde en ~5 min"
                 ),
-                location: String(row.location || "Zona Centro"),
+                location: String(row.location || "Monterrey, N.L."),
                 avatarUrl: String(
                   row.avatar_url ||
                     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80"
@@ -226,7 +224,7 @@ export default function HomePage() {
                 skills: Array.isArray(row.skills)
                   ? (row.skills as string[])
                   : ["Atención rápida", "Garantía"],
-                phone: String(row.phone || "+52 55 0000 0000"),
+                phone: String(row.phone || "+52 81 0000 0000"),
                 reviews: rowReviews,
                 fromSupabase: true,
               };
@@ -243,14 +241,14 @@ export default function HomePage() {
               description: String(row.description || ""),
               category:
                 (row.category as Exclude<CategoryId, "todos">) || "hogar",
-              categoryLabel: String(row.category_label || "Hogar"),
-              location: String(row.location || "Zona Centro"),
+              categoryLabel: String(row.category_label || "Hogar y Climas"),
+              location: String(row.location || "Monterrey, N.L."),
               urgency:
                 (row.urgency as
                   | "Urgente (Hoy)"
                   | "En 24-48 hrs"
                   | "Fecha flexible") || "Urgente (Hoy)",
-              budget: String(row.budget || "$300 MXN"),
+              budget: String(row.budget || "$350 MXN"),
               postedAgo: formatTimeAgo(row.created_at as string | undefined),
               clientName: String(row.client_name || "Usuario"),
               clientVerified: Boolean(row.client_verified ?? true),
@@ -364,21 +362,21 @@ export default function HomePage() {
     setCurrentUser(null);
   };
 
-  // Category Icon Helper
-  const getCategoryIcon = (id: CategoryId, className = "w-6 h-6") => {
+  // Category Icon Helper with uniform strokeWidth={1.75} per IDENTIDAD_VISUAL.md
+  const getCategoryIcon = (id: CategoryId, className = "w-5 h-5") => {
     switch (id) {
       case "hogar":
-        return <Wrench className={className} />;
+        return <Wrench strokeWidth={1.75} className={className} />;
       case "limpieza":
-        return <Sparkles className={className} />;
+        return <Sparkles strokeWidth={1.75} className={className} />;
       case "mudanzas":
-        return <Truck className={className} />;
+        return <Truck strokeWidth={1.75} className={className} />;
       case "mandados":
-        return <ShoppingBag className={className} />;
+        return <ShoppingBag strokeWidth={1.75} className={className} />;
       case "tecnologia":
-        return <Laptop className={className} />;
+        return <Laptop strokeWidth={1.75} className={className} />;
       default:
-        return <HeartHandshake className={className} />;
+        return <HeartHandshake strokeWidth={1.75} className={className} />;
     }
   };
 
@@ -430,15 +428,15 @@ export default function HomePage() {
         helpDescription.trim() ||
         "Busco a alguien confiable y puntual para apoyarme con esta tarea.",
       category: helpCategory,
-      category_label: categoryObj?.name || "Hogar",
-      location: helpLocation.trim() || "Zona Centro",
+      category_label: categoryObj?.name || "Hogar y Climas",
+      location: helpLocation.trim() || "Monterrey, Nuevo León",
       urgency: helpUrgency,
-      budget: helpBudget.trim() || "$350 MXN",
+      budget: helpBudget.trim() || "$400 MXN",
       client_name:
         helpClientName.trim() ||
         (currentUser?.user_metadata?.full_name as string) ||
         currentUser?.email?.split("@")[0] ||
-        "Usuario Verificado",
+        "Vecino Verificado",
       client_verified: true,
       applicants_count: 0,
       status: "Abierto",
@@ -452,7 +450,6 @@ export default function HomePage() {
         .single();
 
       if (error) {
-        // Fallback to local state if table not created yet, while showing clear message
         const fallbackProblema: ProblemaSolicitud = {
           id: `prob-${Date.now()}`,
           title: payload.title,
@@ -471,7 +468,7 @@ export default function HomePage() {
         };
         setProblemas((prev) => [fallbackProblema, ...prev]);
         setHelpSaveStatus(
-          `Mostrado en el tablero local. (Aviso de Supabase: ${error.message}. Asegúrate de ejecutar supabase_schema.sql en tu panel de Supabase).`
+          `Mostrado en el tablero local. (Aviso de Supabase: ${error.message}).`
         );
       } else if (data) {
         const savedProblema: ProblemaSolicitud = {
@@ -509,7 +506,7 @@ export default function HomePage() {
     setHelpTitle("");
     setHelpDescription("");
     setHelpLocation("");
-    setHelpBudget("$300 - $500 MXN");
+    setHelpBudget("$350 - $500 MXN");
     setHelpSubmittedSuccess(false);
     setHelpSaveStatus(null);
   };
@@ -535,22 +532,22 @@ export default function HomePage() {
       name: regName.trim() || "Nuevo Solucionador",
       role: regRole.trim() || "Especialista en Servicios Generales",
       category: regCategory,
-      category_label: categoryObj?.name || "Hogar",
+      category_label: categoryObj?.name || "Hogar y Climas",
       rating: 5.0,
       reviews_count: 1,
       completed_jobs: 1,
-      hourly_rate: regRate.trim() || "$250 MXN / servicio",
+      hourly_rate: regRate.trim() || "$350 MXN / servicio",
       response_time: "Responde en ~5 min",
-      location: regLocation.trim() || "Área Metropolitana",
+      location: regLocation.trim() || "Área Metropolitana de Monterrey",
       avatar_url:
         "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
       verified: true,
       available_today: true,
       bio:
         regBio.trim() ||
-        "Comprometido con brindar soluciones rápidas, seguras y de excelente calidad.",
+        "Comprometido con brindar soluciones rápidas, seguras y de excelente calidad en Nuevo León.",
       skills: finalSkills,
-      phone: regPhone.trim() || "+52 55 0000 0000",
+      phone: regPhone.trim() || "+52 81 0000 0000",
     };
 
     try {
@@ -593,10 +590,9 @@ export default function HomePage() {
         };
         setSolucionadores((prev) => [fallbackSol, ...prev]);
         setRegSaveStatus(
-          `Mostrado en el directorio local. (Aviso de Supabase: ${error.message}. Ejecuta supabase_schema.sql en tu panel de Supabase).`
+          `Mostrado en el directorio local. (Aviso de Supabase: ${error.message}).`
         );
       } else if (data) {
-        // Also insert an initial welcome review in `resenas`
         await supabase.from("resenas").insert([
           {
             perfil_id: data.id,
@@ -715,111 +711,115 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 pb-20 md:pb-0">
-      {/* TOP TRUST & SUPABASE STATUS BANNER */}
-      <div className="bg-slate-900 text-slate-200 text-xs py-2 px-4">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#18181B] pb-24 md:pb-0">
+      {/* TOP EDITORIAL TRUST BAR (Warm Forest #0F4C3A) */}
+      <div className="bg-[#0F4C3A] text-[#F5F4F0] text-xs py-2.5 px-4 border-b border-[#0B3B2D]">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-3">
-            <span className="inline-flex items-center gap-1 text-emerald-400 font-medium">
-              <ShieldCheck className="w-3.5 h-3.5" /> Perfiles 100% verificados
+            <span className="inline-flex items-center gap-1.5 text-[#E6F2EE] font-medium">
+              <ShieldCheck strokeWidth={1.75} className="w-3.5 h-3.5" />
+              Comunidad verificada en Nuevo León
             </span>
-            <span className="hidden sm:inline text-slate-500">•</span>
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px]">
-              <Database className="w-3 h-3 text-blue-400" />
+            <span className="hidden sm:inline text-[#E6F2EE]/40">•</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#0B3B2D] border border-white/10 text-[11px]">
+              <Database strokeWidth={1.75} className="w-3 h-3 text-[#E6F2EE]" />
               {isLoadingDb ? (
-                <span className="text-slate-300">Sincronizando Supabase...</span>
+                <span className="text-[#E6F2EE]/80">
+                  Sincronizando directorio en vivo...
+                </span>
               ) : dbConnected ? (
-                <span className="text-emerald-400 font-semibold">
-                  Conectado a Supabase en vivo
+                <span className="text-[#E6F2EE] font-medium">
+                  Base de datos en tiempo real activa
                 </span>
               ) : (
                 <span
-                  className="text-amber-300"
+                  className="text-amber-200"
                   title={
                     dbErrorHint ||
                     "Ejecuta supabase_schema.sql en el SQL Editor de Supabase"
                   }
                 >
-                  Supabase listo (ejecuta supabase_schema.sql para crear tablas)
+                  Modo demostración activo
                 </span>
               )}
             </span>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="inline-flex items-center gap-1 text-amber-400">
-              <Zap className="w-3.5 h-3.5" /> Tiempo medio de respuesta: 8 min
+          <div className="flex items-center gap-4 tabular-nums">
+            <span className="inline-flex items-center gap-1.5 text-[#E6F2EE]">
+              <span className="w-2 h-2 rounded-full bg-[#D95D39] animate-pulse" />
+              Respuesta promedio en MTY: <strong>8 min</strong>
             </span>
           </div>
         </div>
       </div>
 
-      {/* STICKY NAVBAR */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Brand Logo */}
+      {/* STICKY EDITORIAL NAVBAR */}
+      <header className="sticky top-0 z-40 bg-[#FAFAF9]/90 backdrop-blur-md border-b border-[#E7E5E4]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          {/* Brand Identity */}
           <a
             href="#"
-            className="flex items-center gap-2.5 group focus:outline-none"
+            className="flex items-center gap-3 group focus:outline-none"
           >
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-600/25 group-hover:bg-blue-700 transition-colors">
-              <HeartHandshake className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-2xl bg-[#0F4C3A] flex items-center justify-center text-[#FAFAF9] shadow-sm group-hover:bg-[#D95D39] transition-colors duration-300">
+              <HeartHandshake strokeWidth={1.75} className="w-6 h-6" />
             </div>
             <div>
-              <span className="text-xl font-extrabold tracking-tight text-slate-900">
-                Mano<span className="text-blue-600">Amiga</span>
+              <span className="font-display text-xl font-extrabold tracking-tight text-[#18181B]">
+                Mano<span className="text-[#0F4C3A]">Amiga</span>
               </span>
-              <span className="block text-[10px] font-medium text-slate-500 -mt-1">
-                Soluciones al instante
+              <span className="block text-[11px] font-medium text-[#57534E] -mt-0.5">
+                Oficios y ayuda cotidiana • N.L.
               </span>
             </div>
           </a>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-600">
+          <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-[#57534E]">
             <a
               href="#categorias"
-              className="hover:text-blue-600 transition-colors"
+              className="hover:text-[#18181B] transition-colors"
             >
               Categorías
             </a>
             <a
               href="#solucionadores"
-              className="hover:text-blue-600 transition-colors"
+              className="hover:text-[#18181B] transition-colors tabular-nums"
             >
               Solucionadores ({solucionadores.length})
             </a>
             <a
               href="#problemas"
-              className="hover:text-blue-600 transition-colors flex items-center gap-1.5"
+              className="hover:text-[#18181B] transition-colors flex items-center gap-2"
             >
               <span>Problemas por Resolver</span>
-              <span className="px-1.5 py-0.5 text-[11px] font-bold bg-amber-100 text-amber-800 rounded-full">
+              <span className="px-2 py-0.5 text-[11px] font-bold tabular-nums bg-[#FFF1EC] text-[#D95D39] border border-[#D95D39]/20 rounded-full">
                 {problemas.length}
               </span>
             </a>
             <a
               href="#pedir-ayuda"
-              className="hover:text-blue-600 transition-colors"
+              className="hover:text-[#18181B] transition-colors"
             >
               Pedir Ayuda
             </a>
           </nav>
 
           {/* Desktop Action & Auth Buttons */}
-          <div className="hidden md:flex items-center gap-2.5">
+          <div className="hidden md:flex items-center gap-3">
             {currentUser ? (
-              <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
-                <User className="w-4 h-4 text-blue-600" />
-                <span className="text-xs font-bold text-slate-800 max-w-[130px] truncate">
+              <div className="flex items-center gap-2 bg-[#F5F4F0] px-3.5 py-2 rounded-2xl border border-[#E7E5E4]">
+                <User strokeWidth={1.75} className="w-4 h-4 text-[#0F4C3A]" />
+                <span className="text-xs font-semibold text-[#18181B] max-w-[130px] truncate">
                   {(currentUser.user_metadata?.full_name as string) ||
                     currentUser.email}
                 </span>
                 <button
                   onClick={handleSignOut}
-                  className="text-xs text-rose-600 hover:text-rose-800 font-semibold inline-flex items-center gap-1 ml-1"
+                  className="text-xs text-[#D95D39] hover:text-[#BF4B28] font-semibold inline-flex items-center gap-1 ml-1"
                   title="Cerrar sesión"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <LogOut strokeWidth={1.75} className="w-3.5 h-3.5" />
                 </button>
               </div>
             ) : (
@@ -830,10 +830,10 @@ export default function HomePage() {
                   setAuthMode("login");
                   setIsAuthModalOpen(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 hover:text-blue-700 border border-slate-200 hover:border-blue-300 bg-white transition-all"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-[#18181B] hover:bg-[#F5F4F0] border border-[#E7E5E4] bg-white transition-all active:scale-[0.98]"
               >
-                <LogIn className="w-4 h-4 text-blue-600" />
-                <span>Iniciar Sesión</span>
+                <LogIn strokeWidth={1.75} className="w-4 h-4 text-[#0F4C3A]" />
+                <span>Entrar</span>
               </button>
             )}
 
@@ -843,9 +843,9 @@ export default function HomePage() {
                 setRegSaveStatus(null);
                 setIsRegisterSolucionadorOpen(true);
               }}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-700 hover:text-blue-700 bg-slate-100 hover:bg-blue-50 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-[#0F4C3A] bg-[#E6F2EE] hover:bg-[#0F4C3A] hover:text-white transition-all duration-200 active:scale-[0.98]"
             >
-              <UserPlus className="w-4 h-4 text-blue-600" />
+              <UserPlus strokeWidth={1.75} className="w-4 h-4" />
               <span>Ser Solucionador</span>
             </button>
 
@@ -854,9 +854,9 @@ export default function HomePage() {
                 resetHelpWizard();
                 setIsPedirAyudaModalOpen(true);
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-600/20 transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold text-white bg-[#D95D39] hover:bg-[#BF4B28] shadow-sm hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98]"
             >
-              <PlusCircle className="w-4 h-4" />
+              <PlusCircle strokeWidth={1.75} className="w-4 h-4" />
               <span>Pedir Ayuda</span>
             </button>
           </div>
@@ -871,29 +871,29 @@ export default function HomePage() {
                   setAuthMode("login");
                   setIsAuthModalOpen(true);
                 }}
-                className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100"
+                className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-[#18181B] bg-[#F5F4F0] border border-[#E7E5E4]"
               >
-                <LogIn className="w-3.5 h-3.5 text-blue-600" />
+                <LogIn strokeWidth={1.75} className="w-3.5 h-3.5 text-[#0F4C3A]" />
                 Entrar
               </button>
             ) : (
               <button
                 onClick={handleSignOut}
-                className="inline-flex items-center gap-1 px-2.5 py-2 rounded-lg text-xs font-semibold text-rose-700 bg-rose-50"
+                className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold text-[#D95D39] bg-[#FFF1EC]"
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut strokeWidth={1.75} className="w-3.5 h-3.5" />
                 Salir
               </button>
             )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+              className="p-2.5 rounded-xl text-[#18181B] hover:bg-[#F5F4F0] border border-[#E7E5E4]"
               aria-label="Abrir menú"
             >
               {mobileMenuOpen ? (
-                <X className="w-6 h-6" />
+                <X strokeWidth={1.75} className="w-5 h-5" />
               ) : (
-                <Menu className="w-6 h-6" />
+                <Menu strokeWidth={1.75} className="w-5 h-5" />
               )}
             </button>
           </div>
@@ -901,13 +901,13 @@ export default function HomePage() {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-2">
+          <div className="md:hidden bg-[#FAFAF9] border-b border-[#E7E5E4] px-4 pt-3 pb-5 space-y-2.5">
             {currentUser && (
-              <div className="py-2 px-3 bg-blue-50 rounded-xl text-xs font-semibold text-blue-900 flex items-center justify-between">
+              <div className="py-2.5 px-3.5 bg-[#E6F2EE] rounded-2xl text-xs font-semibold text-[#0F4C3A] flex items-center justify-between">
                 <span>Sesión: {currentUser.email}</span>
                 <button
                   onClick={handleSignOut}
-                  className="text-rose-600 underline"
+                  className="text-[#D95D39] underline"
                 >
                   Cerrar sesión
                 </button>
@@ -916,25 +916,25 @@ export default function HomePage() {
             <a
               href="#categorias"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-medium text-slate-700 hover:text-blue-600"
+              className="block py-2 text-sm font-medium text-[#18181B]"
             >
               Categorías de Servicio
             </a>
             <a
               href="#solucionadores"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-medium text-slate-700 hover:text-blue-600"
+              className="block py-2 text-sm font-medium text-[#18181B]"
             >
               Directorio de Solucionadores ({solucionadores.length})
             </a>
             <a
               href="#problemas"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-medium text-slate-700 hover:text-blue-600"
+              className="block py-2 text-sm font-medium text-[#18181B]"
             >
               Tablero de Problemas por Resolver ({problemas.length})
             </a>
-            <div className="pt-2 border-t border-slate-100 flex flex-col gap-2">
+            <div className="pt-2 border-t border-[#E7E5E4]">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
@@ -942,9 +942,9 @@ export default function HomePage() {
                   setRegSaveStatus(null);
                   setIsRegisterSolucionadorOpen(true);
                 }}
-                className="w-full py-2.5 rounded-xl text-sm font-semibold text-blue-700 bg-blue-50 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl text-sm font-bold text-[#0F4C3A] bg-[#E6F2EE] flex items-center justify-center gap-2"
               >
-                <UserPlus className="w-4 h-4" />
+                <UserPlus strokeWidth={1.75} className="w-4 h-4" />
                 Registrarme como Solucionador
               </button>
             </div>
@@ -952,129 +952,174 @@ export default function HomePage() {
         )}
       </header>
 
-      {/* HERO SECTION WITH MAIN SEARCH */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-blue-950 via-slate-900 to-slate-900 text-white pt-10 pb-14 md:py-20 px-4">
-        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-500/20 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+      {/* ===================================================================== */}
+      {/* ASYMMETRIC 12-COLUMN BENTO HERO SECTION (WARM EDITORIAL CANVAS)       */}
+      {/* ===================================================================== */}
+      <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 md:pt-14 md:pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+          {/* LEFT 7 COLUMNS: Editorial Headline + Tactile Search Bar */}
+          <div className="lg:col-span-7 bg-white rounded-3xl border border-[#E7E5E4] p-6 sm:p-10 shadow-bento flex flex-col justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E6F2EE] border border-[#0F4C3A]/15 text-[#0F4C3A] text-xs font-semibold mb-6">
+                <MapPin strokeWidth={1.75} className="w-3.5 h-3.5" />
+                <span>
+                  Monterrey, San Pedro, Cumbres, San Nicolás y Área Metropolitana
+                </span>
+              </div>
 
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/15 border border-blue-400/30 text-blue-300 text-xs sm:text-sm font-medium mb-6">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>
-              📍 Operando en Monterrey y toda el Área Metropolitana de Nuevo León
-            </span>
-          </div>
+              <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-[#18181B] tracking-tight leading-[1.08] mb-5">
+                ¿Un imprevisto en casa o falta de tiempo? Resuélvelo hoy con{" "}
+                <span className="font-editorial-serif italic font-normal text-[#0F4C3A] text-[1.12em]">
+                  manos de confianza
+                </span>
+                .
+              </h1>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-5">
-            ¿Un imprevisto en casa o falta de tiempo?{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-              Resuélvelo hoy con manos de confianza
-            </span>
-          </h1>
+              <p className="text-base sm:text-lg text-[#57534E] leading-relaxed mb-8 max-w-2xl">
+                Desde una fuga de agua, mantenimiento de minisplit o limpieza
+                profunda, hasta un flete o tus compras en H-E-B. Conecta en
+                minutos con vecinos expertos verificados,{" "}
+                <span className="text-[#18181B] font-medium underline decoration-[#D95D39]/50 underline-offset-4">
+                  sin comisiones ocultas y a trato directo
+                </span>
+                .
+              </p>
 
-          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Desde una fuga de agua, mantenimiento de minisplit o limpieza
-            profunda, hasta un flete o las compras del súper. Conecta en minutos
-            con solucionadores verificados cerca de tu colonia, sin comisiones
-            ocultas y a precio justo.
-          </p>
-
-          {/* MAIN SEARCH BAR */}
-          <div className="max-w-3xl mx-auto bg-white p-2 sm:p-2.5 rounded-2xl shadow-2xl shadow-blue-950/50 border border-slate-200/80">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <div className="flex-1 flex items-center gap-3 px-3.5 py-2.5 text-slate-800">
-                <Search className="w-5 h-5 text-blue-600 shrink-0" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="¿Qué necesitas resolver hoy? (Ej. plomero, minisplit, flete, limpieza, H-E-B...)"
-                  className="w-full text-sm sm:text-base bg-transparent text-slate-900 placeholder-slate-400 focus:outline-none"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="text-slate-400 hover:text-slate-600"
-                    title="Limpiar búsqueda"
+              {/* TACTILE SEARCH BOX */}
+              <div className="bg-[#FAFAF9] p-2 rounded-2xl border border-[#E7E5E4] focus-within:border-[#0F4C3A] focus-within:ring-4 focus-within:ring-[#0F4C3A]/10 transition-all">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                  <div className="flex-1 flex items-center gap-3 px-3.5 py-2.5">
+                    <Search
+                      strokeWidth={1.75}
+                      className="w-5 h-5 text-[#0F4C3A] shrink-0"
+                    />
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="¿Qué necesitas resolver hoy? (Ej. plomero, minisplit, flete, limpieza...)"
+                      className="w-full text-sm sm:text-base bg-transparent text-[#18181B] placeholder-[#57534E]/70 focus:outline-none"
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={() => setSearchQuery("")}
+                        className="text-[#57534E] hover:text-[#18181B]"
+                        title="Limpiar búsqueda"
+                      >
+                        <X strokeWidth={1.75} className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                  <a
+                    href="#solucionadores"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm sm:text-base transition-all shadow-sm hover:-translate-y-0.5 active:scale-[0.98] shrink-0"
                   >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
+                    <span>Buscar Especialista</span>
+                    <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
-              <a
-                href="#solucionadores"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base transition-all shadow-md shadow-blue-600/25 shrink-0"
-              >
-                <span>Encontrar Solucionador</span>
-                <ArrowRight className="w-4 h-4" />
-              </a>
+            </div>
+
+            {/* Quick Popular Tags */}
+            <div className="mt-6 pt-5 border-t border-[#E7E5E4] flex flex-wrap items-center gap-2 text-xs">
+              <span className="text-[#57534E] font-medium mr-1">
+                Frecuentes hoy en N.L.:
+              </span>
+              {[
+                { label: "❄️ Minisplits", query: "minisplit" },
+                { label: "🔧 Fuga de agua", query: "fuga" },
+                { label: "✨ Limpieza profunda", query: "limpieza" },
+                { label: "🚚 Fletes con camioneta", query: "camioneta" },
+                { label: "🛒 Mandados / H-E-B", query: "H-E-B" },
+                { label: "💻 Wi-Fi Mesh", query: "Wi-Fi" },
+              ].map((tag) => (
+                <button
+                  key={tag.label}
+                  onClick={() => {
+                    setSearchQuery(tag.query);
+                    setSelectedCategory("todos");
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-[#F5F4F0] hover:bg-[#E6F2EE] text-[#18181B] hover:text-[#0F4C3A] border border-[#E7E5E4] font-medium transition-all active:scale-95"
+                >
+                  {tag.label}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Quick Popular Tags */}
-          <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-300">
-            <span className="text-slate-400 font-medium">
-              Lo más pedido en Nuevo León:
-            </span>
-            {[
-              { label: "❄️ Mantenimiento Minisplit", query: "minisplit" },
-              { label: "🔧 Plomería y Fugas", query: "fuga" },
-              { label: "✨ Limpieza Profunda", query: "limpieza" },
-              { label: "🚚 Fletes y Mudanzas", query: "camioneta" },
-              { label: "🛒 Mandados / H-E-B", query: "H-E-B" },
-              { label: "💻 Redes Wi-Fi Mesh", query: "Wi-Fi" },
-            ].map((tag) => (
-              <button
-                key={tag.label}
-                onClick={() => {
-                  setSearchQuery(tag.query);
-                  setSelectedCategory("todos");
-                }}
-                className="px-3 py-1 rounded-full bg-slate-800/90 hover:bg-blue-600/40 border border-slate-700 hover:border-blue-400 text-slate-200 transition-colors"
-              >
-                {tag.label}
-              </button>
-            ))}
-          </div>
+          {/* RIGHT 5 COLUMNS: Asymmetric Bento Trust Mosaic */}
+          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            {/* Top Wide Bento Card (Deep Forest #0F4C3A) */}
+            <div className="sm:col-span-2 bg-[#0F4C3A] text-[#FAFAF9] rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-bento relative overflow-hidden">
+              <div className="flex items-center justify-between gap-2 mb-6">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#E6F2EE] text-xs font-semibold">
+                  <span className="w-2 h-2 rounded-full bg-[#D95D39] animate-ping" />
+                  Tiempo real en tu colonia
+                </span>
+                <Zap strokeWidth={1.75} className="w-5 h-5 text-[#D95D39]" />
+              </div>
 
-          {/* Hero Trust Cards */}
-          <div className="mt-8 pt-6 border-t border-slate-800/80 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto text-left">
-            <div className="flex items-center gap-3 bg-slate-800/50 rounded-xl p-3.5 border border-slate-700/60">
-              <div className="w-10 h-10 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-5 h-5" />
+              <div>
+                <div className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight tabular-nums mb-2">
+                  ~8 min
+                </div>
+                <p className="text-sm sm:text-base text-[#E6F2EE]/90 leading-relaxed">
+                  Es lo que tarda en promedio un{" "}
+                  <span className="font-editorial-serif italic text-lg text-white">
+                    Solucionador verificado
+                  </span>{" "}
+                  en responder a una urgencia publicada en Monterrey.
+                </p>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/15 flex items-center justify-between text-xs text-[#E6F2EE]/80">
+                <span>¿Prefieres que te contacten?</span>
+                <button
+                  onClick={() => {
+                    resetHelpWizard();
+                    setIsPedirAyudaModalOpen(true);
+                  }}
+                  className="font-bold text-white underline decoration-[#D95D39] underline-offset-4 hover:text-[#D95D39] transition-colors inline-flex items-center gap-1"
+                >
+                  Publicar problema en 3 pasos
+                  <ArrowRight strokeWidth={1.75} className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Bottom Left Bento Card (Warm Stone #F5F4F0) */}
+            <div className="bg-[#F5F4F0] rounded-3xl border border-[#E7E5E4] p-6 flex flex-col justify-between shadow-bento">
+              <div className="w-11 h-11 rounded-2xl bg-white border border-[#E7E5E4] text-[#0F4C3A] flex items-center justify-center mb-4">
+                <ShieldCheck strokeWidth={1.75} className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">
-                  Seguridad Primero
+                <div className="font-display text-2xl font-extrabold text-[#18181B] tabular-nums">
+                  4.9 ★
+                </div>
+                <p className="text-sm font-bold text-[#18181B] mt-0.5">
+                  Reputación Comprobada
                 </p>
-                <p className="text-xs text-slate-400">
-                  Identidad verificada y reseñas de vecinos reales
+                <p className="text-xs text-[#57534E] mt-1 leading-relaxed">
+                  Reseñas escritas por vecinos reales de tu misma zona.
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-slate-800/50 rounded-xl p-3.5 border border-slate-700/60">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                <Clock className="w-5 h-5" />
+
+            {/* Bottom Right Bento Card (Pure Card #FFFFFF) */}
+            <div className="bg-white rounded-3xl border border-[#E7E5E4] p-6 flex flex-col justify-between shadow-bento">
+              <div className="w-11 h-11 rounded-2xl bg-[#FFF1EC] text-[#D95D39] flex items-center justify-center mb-4">
+                <Award strokeWidth={1.75} className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">
-                  Respuesta en &lt; 10 Min
-                </p>
-                <p className="text-xs text-slate-400">
-                  Solucionadores activos en todo Nuevo León
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-slate-800/50 rounded-xl p-3.5 border border-slate-700/60">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
-                <Award className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-white">
+                <div className="font-display text-2xl font-extrabold text-[#18181B] tabular-nums">
+                  0% Extra
+                </div>
+                <p className="text-sm font-bold text-[#18181B] mt-0.5">
                   Trato Directo y Justo
                 </p>
-                <p className="text-xs text-slate-400">
-                  Acuerda el precio exacto antes de iniciar
+                <p className="text-xs text-[#57534E] mt-1 leading-relaxed">
+                  Acuerdas la tarifa directamente antes de iniciar el trabajo.
                 </p>
               </div>
             </div>
@@ -1082,60 +1127,81 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CATEGORIES SECTION */}
+      {/* ===================================================================== */}
+      {/* BENTO MOSAIC OF CATEGORIES                                            */}
+      {/* ===================================================================== */}
       <section
         id="categorias"
-        className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 -mt-6 relative z-20"
+        className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6"
       >
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-200/90 p-5 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+        <div className="bg-white rounded-3xl border border-[#E7E5E4] p-6 sm:p-8 shadow-bento">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
             <div>
-              <h2 className="text-lg sm:text-xl font-bold text-slate-900">
-                Explora por Categoría
+              <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
+                Especialidades Locales
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight mt-0.5">
+                ¿En qué área necesitas{" "}
+                <span className="font-editorial-serif italic font-normal text-[#0F4C3A] text-[1.1em]">
+                  apoyo hoy
+                </span>
+                ?
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500">
-                Selecciona un área para filtrar tanto solucionadores como
-                solicitudes activas
-              </p>
             </div>
             {selectedCategory !== "todos" && (
               <button
                 onClick={() => setSelectedCategory("todos")}
-                className="self-start sm:self-auto text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                className="self-start sm:self-auto text-xs font-bold text-[#D95D39] hover:text-[#BF4B28] flex items-center gap-1.5 bg-[#FFF1EC] px-3.5 py-2 rounded-xl"
               >
-                <X className="w-3.5 h-3.5" /> Mostrar todas las categorías
+                <X strokeWidth={1.75} className="w-3.5 h-3.5" /> Mostrar todas
+                las categorías
               </button>
             )}
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
             <button
               onClick={() => setSelectedCategory("todos")}
-              className={`flex flex-col items-start p-3.5 rounded-xl border text-left transition-all ${
+              className={`flex flex-col justify-between p-5 rounded-2xl border text-left transition-all duration-200 active:scale-[0.98] ${
                 selectedCategory === "todos"
-                  ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20"
-                  : "bg-slate-50 hover:bg-slate-100 text-slate-800 border-slate-200"
+                  ? "bg-[#0F4C3A] text-white border-[#0F4C3A] shadow-md -translate-y-0.5"
+                  : "bg-[#F5F4F0] hover:bg-white text-[#18181B] border-[#E7E5E4] hover:border-[#0F4C3A]/40"
               }`}
             >
-              <div
-                className={`w-10 h-10 rounded-lg flex items-center justify-center mb-2.5 ${
-                  selectedCategory === "todos"
-                    ? "bg-white/20 text-white"
-                    : "bg-blue-100 text-blue-700"
-                }`}
-              >
-                <HeartHandshake className="w-5 h-5" />
+              <div className="w-full flex items-center justify-between mb-4">
+                <div
+                  className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+                    selectedCategory === "todos"
+                      ? "bg-white/15 text-white"
+                      : "bg-white text-[#0F4C3A] border border-[#E7E5E4]"
+                  }`}
+                >
+                  <HeartHandshake strokeWidth={1.75} className="w-5 h-5" />
+                </div>
+                <span
+                  className={`text-xs font-bold tabular-nums px-2.5 py-0.5 rounded-full ${
+                    selectedCategory === "todos"
+                      ? "bg-white/15 text-white"
+                      : "bg-white text-[#57534E] border border-[#E7E5E4]"
+                  }`}
+                >
+                  150
+                </span>
               </div>
-              <span className="font-bold text-sm">Todas</span>
-              <span
-                className={`text-[11px] mt-0.5 line-clamp-1 ${
-                  selectedCategory === "todos"
-                    ? "text-blue-100"
-                    : "text-slate-500"
-                }`}
-              >
-                Ver todo el catálogo
-              </span>
+              <div>
+                <span className="font-display font-bold text-sm block">
+                  Todas
+                </span>
+                <span
+                  className={`text-xs mt-0.5 line-clamp-1 ${
+                    selectedCategory === "todos"
+                      ? "text-[#E6F2EE]"
+                      : "text-[#57534E]"
+                  }`}
+                >
+                  Catálogo completo
+                </span>
+              </div>
             </button>
 
             {CATEGORIES.map((cat) => {
@@ -1146,38 +1212,44 @@ export default function HomePage() {
                   onClick={() =>
                     setSelectedCategory(isSelected ? "todos" : cat.id)
                   }
-                  className={`flex flex-col items-start p-3.5 rounded-xl border text-left transition-all ${
+                  className={`flex flex-col justify-between p-5 rounded-2xl border text-left transition-all duration-200 active:scale-[0.98] ${
                     isSelected
-                      ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/20"
-                      : "bg-white hover:border-blue-300 hover:bg-blue-50/40 text-slate-800 border-slate-200"
+                      ? "bg-[#0F4C3A] text-white border-[#0F4C3A] shadow-md -translate-y-0.5"
+                      : "bg-[#FAFAF9] hover:bg-white text-[#18181B] border-[#E7E5E4] hover:border-[#0F4C3A]/40"
                   }`}
                 >
-                  <div className="w-full flex items-center justify-between mb-2.5">
+                  <div className="w-full flex items-center justify-between mb-4">
                     <div
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        isSelected ? "bg-white/20 text-white" : cat.badgeColor
+                      className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+                        isSelected
+                          ? "bg-white/15 text-white"
+                          : "bg-[#E6F2EE] text-[#0F4C3A]"
                       }`}
                     >
                       {getCategoryIcon(cat.id, "w-5 h-5")}
                     </div>
                     <span
-                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+                      className={`text-xs font-bold tabular-nums px-2.5 py-0.5 rounded-full ${
                         isSelected
-                          ? "bg-white/20 text-white"
-                          : "bg-slate-100 text-slate-600"
+                          ? "bg-white/15 text-white"
+                          : "bg-[#F5F4F0] text-[#57534E] border border-[#E7E5E4]"
                       }`}
                     >
                       {cat.count}
                     </span>
                   </div>
-                  <span className="font-bold text-sm">{cat.name}</span>
-                  <span
-                    className={`text-[11px] mt-0.5 line-clamp-1 ${
-                      isSelected ? "text-blue-100" : "text-slate-500"
-                    }`}
-                  >
-                    {cat.subtitle}
-                  </span>
+                  <div>
+                    <span className="font-display font-bold text-sm block">
+                      {cat.name}
+                    </span>
+                    <span
+                      className={`text-xs mt-0.5 line-clamp-1 ${
+                        isSelected ? "text-[#E6F2EE]" : "text-[#57534E]"
+                      }`}
+                    >
+                      {cat.subtitle}
+                    </span>
+                  </div>
                 </button>
               );
             })}
@@ -1185,35 +1257,40 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* DIRECTORY OF SOLUCIONADORES */}
+      {/* ===================================================================== */}
+      {/* DIRECTORY OF SOLUCIONADORES (EDITORIAL CREDENTIAL CARDS)              */}
+      {/* ===================================================================== */}
       <section
         id="solucionadores"
-        className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-12 pb-8"
+        className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-12 pb-10"
       >
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-blue-600 mb-1">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Directorio de Expertos y Ayudantes</span>
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0F4C3A] mb-1.5">
+              <ShieldCheck strokeWidth={1.75} className="w-4 h-4" />
+              <span>Directorio de Especialistas Verificados</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Solucionadores Destacados
+            <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#18181B] tracking-tight">
+              Solucionadores listos{" "}
+              <span className="font-editorial-serif italic font-normal text-[#0F4C3A] text-[1.08em]">
+                en tu colonia
+              </span>
             </h2>
-            <p className="text-sm text-slate-600 mt-1">
-              Personas reales con calificaciones comprobadas listas para
-              ayudarte hoy mismo.
+            <p className="text-sm sm:text-base text-[#57534E] mt-1">
+              Revisa su experiencia, lee reseñas de otros vecinos y contáctalos
+              sin intermediarios.
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <label className="inline-flex items-center gap-2 text-sm font-medium text-slate-700 bg-white px-3.5 py-2 rounded-xl border border-slate-200 cursor-pointer select-none shadow-sm hover:border-blue-300">
+            <label className="inline-flex items-center gap-2.5 text-sm font-medium text-[#18181B] bg-white px-4 py-2.5 rounded-2xl border border-[#E7E5E4] cursor-pointer select-none shadow-sm hover:border-[#0F4C3A]/40 transition-colors">
               <input
                 type="checkbox"
                 checked={onlyAvailableToday}
                 onChange={(e) => setOnlyAvailableToday(e.target.checked)}
-                className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4"
+                className="rounded text-[#0F4C3A] focus:ring-[#0F4C3A] w-4 h-4"
               />
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span className="w-2 h-2 rounded-full bg-[#15803D]" />
               <span>Disponibles hoy</span>
             </label>
 
@@ -1223,23 +1300,46 @@ export default function HomePage() {
                 setRegSaveStatus(null);
                 setIsRegisterSolucionadorOpen(true);
               }}
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl border border-blue-200 transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#0F4C3A] bg-[#E6F2EE] hover:bg-[#0F4C3A] hover:text-white px-4 py-2.5 rounded-2xl border border-[#0F4C3A]/15 transition-all"
             >
-              <UserPlus className="w-4 h-4" />
-              <span>¿Ofreces un servicio? Únete aquí</span>
+              <UserPlus strokeWidth={1.75} className="w-4 h-4" />
+              <span>¿Ofreces un oficio? Anúnciate gratis</span>
             </button>
           </div>
         </div>
 
-        {filteredSolucionadores.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center">
-            <Filter className="w-10 h-10 text-slate-400 mx-auto mb-3" />
-            <h3 className="text-lg font-bold text-slate-800">
-              No encontramos solucionadores con ese filtro
+        {/* Warm Skeletons when first loading if needed */}
+        {isLoadingDb && solucionadores.length === 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+            {[1, 2, 3].map((n) => (
+              <div
+                key={n}
+                className="bg-white rounded-3xl border border-[#E7E5E4] p-7 space-y-4"
+              >
+                <div className="h-6 w-32 bg-[#E7E5E4]/60 rounded-full animate-pulse" />
+                <div className="flex gap-4">
+                  <div className="w-16 h-16 rounded-2xl bg-[#E7E5E4]/60 animate-pulse" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-5 w-3/4 bg-[#E7E5E4]/60 rounded-lg animate-pulse" />
+                    <div className="h-4 w-1/2 bg-[#E7E5E4]/60 rounded-lg animate-pulse" />
+                  </div>
+                </div>
+                <div className="h-16 w-full bg-[#E7E5E4]/60 rounded-2xl animate-pulse" />
+              </div>
+            ))}
+          </div>
+        ) : filteredSolucionadores.length === 0 ? (
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] p-12 text-center shadow-bento">
+            <Filter
+              strokeWidth={1.75}
+              className="w-10 h-10 text-[#57534E] mx-auto mb-3"
+            />
+            <h3 className="font-display text-lg font-bold text-[#18181B]">
+              No encontramos solucionadores con ese filtro exacto
             </h3>
-            <p className="text-sm text-slate-500 mt-1 mb-4">
-              Prueba cambiando la categoría o publica tu problema directamente
-              para que te contacten.
+            <p className="text-sm text-[#57534E] mt-1 mb-5">
+              Prueba mostrando todas las categorías o publica tu necesidad para
+              que te contacten directamente.
             </p>
             <button
               onClick={() => {
@@ -1247,173 +1347,212 @@ export default function HomePage() {
                 setSearchQuery("");
                 setOnlyAvailableToday(false);
               }}
-              className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700"
+              className="px-5 py-2.5 rounded-2xl bg-[#0F4C3A] text-white text-sm font-bold hover:bg-[#0B3B2D]"
             >
               Restablecer filtros
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSolucionadores.map((sol) => (
-              <div
-                key={sol.id}
-                className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-blue-300 transition-all flex flex-col justify-between overflow-hidden group"
-              >
-                <div className="p-5 sm:p-6">
-                  {/* Top Badge Row */}
-                  <div className="flex items-center justify-between gap-2 mb-4">
-                    <div className="flex items-center gap-1.5">
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
-                        {getCategoryIcon(
-                          sol.category,
-                          "w-3.5 h-3.5 text-blue-600"
-                        )}
-                        {sol.categoryLabel}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+            {filteredSolucionadores.map((sol) => {
+              const isFavorite =
+                sol.rating >= 4.9 && sol.completedJobs >= 90;
+              return (
+                <div
+                  key={sol.id}
+                  className="bg-white rounded-3xl border border-[#E7E5E4] shadow-bento hover:shadow-bento-hover hover:-translate-y-1 hover:border-[#0F4C3A]/40 transition-all duration-300 flex flex-col justify-between overflow-hidden group relative"
+                >
+                  {/* Top Editorial Ribbon for Favorite / Top Rated */}
+                  {isFavorite && (
+                    <div className="bg-[#F5F4F0] border-b border-[#E7E5E4] px-6 py-2 flex items-center justify-between text-[11px] font-bold text-[#0F4C3A]">
+                      <span>★ Favorito en tu zona</span>
+                      <span className="text-[#57534E] font-medium tabular-nums">
+                        +98% clientes satisfechos
                       </span>
-                      {sol.fromSupabase && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-                          <Database className="w-3 h-3" /> En vivo
+                    </div>
+                  )}
+
+                  <div className="p-6 sm:p-7">
+                    {/* Top Status Row */}
+                    <div className="flex items-center justify-between gap-2 mb-5">
+                      <div className="flex items-center gap-1.5">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#F5F4F0] text-[#18181B] border border-[#E7E5E4]">
+                          {getCategoryIcon(
+                            sol.category,
+                            "w-3.5 h-3.5 text-[#0F4C3A]"
+                          )}
+                          {sol.categoryLabel}
                         </span>
-                      )}
-                    </div>
-                    {sol.availableToday ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        Disponible hoy
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
-                        Agenda previa
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Profile Header */}
-                  <div className="flex items-start gap-4">
-                    <div className="relative shrink-0">
-                      <img
-                        src={sol.avatarUrl}
-                        alt={sol.name}
-                        className="w-16 h-16 rounded-2xl object-cover border-2 border-slate-100 shadow-sm"
-                      />
-                      {sol.verified && (
-                        <div
-                          className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center ring-2 ring-white"
-                          title="Identidad Verificada"
-                        >
-                          <ShieldCheck className="w-3.5 h-3.5" />
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <h3 className="text-lg font-bold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
-                        {sol.name}
-                      </h3>
-                      <p className="text-xs sm:text-sm font-medium text-slate-600 line-clamp-1">
-                        {sol.role}
-                      </p>
-
-                      <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
-                        <span className="inline-flex items-center gap-1 font-bold text-slate-900 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md">
-                          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                          {sol.rating.toFixed(1)}
-                          <span className="font-normal text-slate-500">
-                            ({sol.reviewsCount})
+                        {sol.fromSupabase && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F2EE] text-[#0F4C3A]">
+                            <Database strokeWidth={1.75} className="w-3 h-3" />{" "}
+                            Verificado
                           </span>
+                        )}
+                      </div>
+
+                      {sol.availableToday ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#E6F2EE] text-[#0F4C3A]">
+                          <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse" />
+                          Disponible hoy
                         </span>
-                        <span className="text-slate-500">
-                          • {sol.completedJobs} trabajos
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#F5F4F0] text-[#57534E]">
+                          Agenda previa
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Identity Block */}
+                    <div className="flex items-start gap-4">
+                      <div className="relative shrink-0">
+                        <img
+                          src={sol.avatarUrl}
+                          alt={sol.name}
+                          className="w-16 h-16 rounded-2xl object-cover border border-[#E7E5E4] shadow-sm"
+                        />
+                        {sol.verified && (
+                          <div
+                            className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-[#0F4C3A] text-white flex items-center justify-center ring-2 ring-white"
+                            title="Identidad Verificada"
+                          >
+                            <ShieldCheck
+                              strokeWidth={1.75}
+                              className="w-3.5 h-3.5"
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-display text-lg font-extrabold text-[#18181B] truncate group-hover:text-[#0F4C3A] transition-colors">
+                          {sol.name}
+                        </h3>
+                        <p className="text-xs sm:text-sm font-medium text-[#57534E] line-clamp-1">
+                          {sol.role}
+                        </p>
+
+                        <div className="flex flex-wrap items-center gap-2 mt-2.5 text-xs tabular-nums">
+                          <span className="inline-flex items-center gap-1 font-bold text-[#18181B] bg-[#FEF3C7] border border-amber-300/60 px-2.5 py-0.5 rounded-lg">
+                            <Star
+                              strokeWidth={1.75}
+                              className="w-3.5 h-3.5 fill-[#D97706] text-[#D97706]"
+                            />
+                            {sol.rating.toFixed(1)}
+                            <span className="font-normal text-[#57534E]">
+                              ({sol.reviewsCount})
+                            </span>
+                          </span>
+                          <span className="text-[#57534E] font-medium">
+                            • {sol.completedJobs} servicios
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bio */}
+                    <p className="mt-4 text-xs sm:text-sm text-[#57534E] line-clamp-2 leading-relaxed">
+                      {sol.bio}
+                    </p>
+
+                    {/* Skills Chips */}
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {sol.skills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="px-2.5 py-1 rounded-lg bg-[#F5F4F0] text-[#44403C] border border-[#E7E5E4] text-[11px] font-medium"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Location & Response Time */}
+                    <div className="mt-5 pt-4 border-t border-[#E7E5E4] space-y-1.5 text-xs text-[#57534E] tabular-nums">
+                      <div className="flex items-center gap-2">
+                        <MapPin
+                          strokeWidth={1.75}
+                          className="w-4 h-4 text-[#0F4C3A] shrink-0"
+                        />
+                        <span className="truncate">{sol.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Clock
+                          strokeWidth={1.75}
+                          className="w-4 h-4 text-[#0F4C3A] shrink-0"
+                        />
+                        <span className="font-semibold text-[#0F4C3A]">
+                          {sol.responseTime}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <p className="mt-4 text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed">
-                    {sol.bio}
-                  </p>
+                  {/* Separated Card Footer (#FAFAF9) */}
+                  <div className="px-6 py-4 bg-[#FAFAF9] border-t border-[#E7E5E4] flex items-center justify-between gap-3">
+                    <div>
+                      <span className="block text-[10px] uppercase tracking-wider font-bold text-[#57534E]">
+                        Tarifa base
+                      </span>
+                      <span className="font-display text-sm font-extrabold text-[#18181B] tabular-nums">
+                        {sol.hourlyRate}
+                      </span>
+                    </div>
 
-                  <div className="mt-3.5 flex flex-wrap gap-1.5">
-                    {sol.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-medium"
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setSelectedSolucionador(sol)}
+                        className="px-3.5 py-2.5 rounded-xl text-xs font-bold text-[#18181B] hover:bg-[#F5F4F0] bg-white border border-[#E7E5E4] transition-all active:scale-95"
                       >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-4 pt-4 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
-                      <span className="truncate">{sol.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <span className="font-medium text-emerald-700">
-                        {sol.responseTime}
-                      </span>
+                        Perfil
+                      </button>
+                      <button
+                        onClick={() => {
+                          setContactMessage("");
+                          setContactSent(false);
+                          setContactModalSolucionador(sol);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-[#D95D39] hover:bg-[#BF4B28] shadow-sm hover:-translate-y-0.5 transition-all active:scale-95"
+                      >
+                        <MessageCircle
+                          strokeWidth={1.75}
+                          className="w-3.5 h-3.5"
+                        />
+                        Contactar
+                      </button>
                     </div>
                   </div>
                 </div>
-
-                {/* Card Footer */}
-                <div className="px-5 py-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between gap-3">
-                  <div>
-                    <span className="block text-[10px] uppercase tracking-wider font-semibold text-slate-400">
-                      Tarifa estimada
-                    </span>
-                    <span className="text-sm font-extrabold text-slate-900">
-                      {sol.hourlyRate}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setSelectedSolucionador(sol)}
-                      className="px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-200 transition-colors"
-                    >
-                      Ver perfil
-                    </button>
-                    <button
-                      onClick={() => {
-                        setContactMessage("");
-                        setContactSent(false);
-                        setContactModalSolucionador(sol);
-                      }}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition-colors"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5" />
-                      Contactar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
 
-      {/* ACTIVE PROBLEMS BOARD ("PROBLEMAS POR RESOLVER") */}
+      {/* ===================================================================== */}
+      {/* ACTIVE PROBLEMS BOARD (DEEP FOREST #0F4C3A BENTO CONTAINER)           */}
+      {/* ===================================================================== */}
       <section
         id="problemas"
         className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10"
       >
-        <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 rounded-3xl p-6 sm:p-8 lg:p-10 text-white shadow-xl">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div className="bg-[#0F4C3A] rounded-[32px] p-6 sm:p-10 lg:p-12 text-[#FAFAF9] shadow-bento">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold mb-2">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                <span>Tablero Conectado a Supabase</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-[#E6F2EE] text-xs font-semibold mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#D95D39] animate-ping" />
+                <span>Muro Vecinal en Tiempo Real • Nuevo León</span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold">
-                Problemas por Resolver Ahora Mismo
+              <h2 className="font-display text-2xl sm:text-4xl font-extrabold tracking-tight">
+                Problemas que buscan{" "}
+                <span className="font-editorial-serif italic font-normal text-[#E6F2EE] text-[1.1em]">
+                  solución hoy
+                </span>
               </h2>
-              <p className="text-sm text-slate-300 mt-1 max-w-2xl">
-                Personas reales buscando quién les eche la mano hoy. Postúlate
-                con un clic, cambia el estado de la solicitud o publica tu
-                propio problema.
+              <p className="text-sm sm:text-base text-[#E6F2EE]/85 mt-1.5 max-w-2xl">
+                Vecinos de Monterrey y su Área Metropolitana que necesitan una
+                mano ahora mismo. Postúlate con un clic o publica tu propia
+                solicitud.
               </p>
             </div>
 
@@ -1422,49 +1561,56 @@ export default function HomePage() {
                 resetHelpWizard();
                 setIsPedirAyudaModalOpen(true);
               }}
-              className="self-start md:self-auto inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 text-white font-bold text-sm shadow-lg shadow-blue-500/25 transition-all shrink-0"
+              className="self-start md:self-auto inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm shadow-sm hover:-translate-y-0.5 transition-all active:scale-95 shrink-0"
             >
-              <PlusCircle className="w-4 h-4" />
+              <PlusCircle strokeWidth={1.75} className="w-4 h-4" />
               Publicar mi Problema
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {filteredProblemas.map((prob) => {
               const isUrgent = prob.urgency === "Urgente (Hoy)";
               return (
                 <div
                   key={prob.id}
-                  className="bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-5 flex flex-col justify-between transition-all"
+                  className="bg-[#FAFAF9] text-[#18181B] border border-[#E7E5E4] rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5 shadow-sm"
                 >
                   <div>
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-700 text-slate-200">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#F5F4F0] text-[#18181B] border border-[#E7E5E4]">
                           {getCategoryIcon(
                             prob.category,
-                            "w-3.5 h-3.5 text-blue-400"
+                            "w-3.5 h-3.5 text-[#0F4C3A]"
                           )}
                           {prob.categoryLabel}
                         </span>
                         <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold ${
+                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
                             isUrgent
-                              ? "bg-rose-500/20 text-rose-300 border border-rose-500/30"
-                              : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                              ? "bg-[#FFF1EC] text-[#C2410C] border border-[#D95D39]/25"
+                              : "bg-[#FEF3C7] text-[#B45309] border border-amber-300/60"
                           }`}
                         >
-                          <AlertCircle className="w-3.5 h-3.5" />
+                          <AlertCircle
+                            strokeWidth={1.75}
+                            className="w-3.5 h-3.5"
+                          />
                           {prob.urgency}
                         </span>
                         {prob.fromSupabase && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                            <Database className="w-3 h-3" /> Supabase
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F2EE] text-[#0F4C3A]">
+                            <Database
+                              strokeWidth={1.75}
+                              className="w-3 h-3"
+                            />{" "}
+                            En vivo
                           </span>
                         )}
                       </div>
 
-                      {/* Interactive Status Selector (Task 3.4: Abierta -> En proceso -> Resuelta) */}
+                      {/* Interactive Status Selector */}
                       <select
                         value={prob.status}
                         onChange={(e) =>
@@ -1477,51 +1623,49 @@ export default function HomePage() {
                           )
                         }
                         aria-label="Estado de la solicitud"
-                        className={`text-xs font-bold px-2.5 py-1 rounded-lg border cursor-pointer focus:outline-none ${
+                        className={`text-xs font-bold px-3 py-1.5 rounded-xl border cursor-pointer focus:outline-none ${
                           prob.status === "Resuelta"
-                            ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                            ? "bg-[#E6F2EE] text-[#0F4C3A] border-[#0F4C3A]/20"
                             : prob.status === "En proceso"
-                            ? "bg-blue-500/20 text-blue-300 border-blue-500/40"
-                            : "bg-slate-700 text-slate-200 border-slate-600"
+                            ? "bg-[#FEF3C7] text-[#B45309] border-amber-300"
+                            : "bg-white text-[#18181B] border-[#E7E5E4]"
                         }`}
                       >
-                        <option value="Abierto" className="bg-slate-900">
-                          🟢 Abierta
-                        </option>
-                        <option value="En proceso" className="bg-slate-900">
-                          🟡 En proceso
-                        </option>
-                        <option value="Resuelta" className="bg-slate-900">
-                          ✅ Resuelta
-                        </option>
+                        <option value="Abierto">🟢 Abierta</option>
+                        <option value="En proceso">🟡 En proceso</option>
+                        <option value="Resuelta">✅ Resuelta</option>
                       </select>
                     </div>
 
-                    <h3 className="text-base sm:text-lg font-bold text-white mb-1.5">
+                    <h3 className="font-display text-lg sm:text-xl font-extrabold text-[#18181B] mb-2">
                       {prob.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-4">
+                    <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed mb-5">
                       {prob.description}
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-700/80 flex flex-wrap items-center justify-between gap-3">
+                  {/* Receipt-Style Footer with Tabular Budget */}
+                  <div className="pt-4 border-t border-[#E7E5E4] flex flex-wrap items-center justify-between gap-4">
                     <div className="space-y-1">
-                      <div className="flex items-center gap-3 text-xs text-slate-300">
-                        <span className="inline-flex items-center gap-1">
-                          <MapPin className="w-3.5 h-3.5 text-blue-400" />
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-[#57534E]">
+                        <span className="inline-flex items-center gap-1 font-medium text-[#18181B]">
+                          <MapPin
+                            strokeWidth={1.75}
+                            className="w-3.5 h-3.5 text-[#D95D39]"
+                          />
                           {prob.location}
                         </span>
                         <span>•</span>
                         <span>Por {prob.clientName}</span>
                         <span>•</span>
-                        <span className="text-slate-400">{prob.postedAgo}</span>
+                        <span className="tabular-nums">{prob.postedAgo}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-slate-400">
+                      <div className="inline-flex items-center gap-2 bg-[#F5F4F0] px-3 py-1 rounded-xl border border-[#E7E5E4] mt-1">
+                        <span className="text-xs text-[#57534E]">
                           Presupuesto ofrecido:
                         </span>
-                        <span className="text-sm font-extrabold text-emerald-400">
+                        <span className="font-display text-sm font-extrabold text-[#0F4C3A] tabular-nums">
                           {prob.budget}
                         </span>
                       </div>
@@ -1535,16 +1679,16 @@ export default function HomePage() {
                         setApplyModalProblema(prob);
                       }}
                       disabled={prob.status === "Resuelta"}
-                      className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-colors shadow-sm ${
+                      className={`inline-flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all active:scale-95 tabular-nums ${
                         prob.status === "Resuelta"
-                          ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                          : "bg-white hover:bg-blue-50 text-slate-900"
+                          ? "bg-[#E7E5E4] text-[#57534E] cursor-not-allowed"
+                          : "bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white shadow-sm"
                       }`}
                     >
-                      <ThumbsUp className="w-4 h-4 text-blue-600" />
+                      <ThumbsUp strokeWidth={1.75} className="w-4 h-4" />
                       <span>
                         {prob.status === "Resuelta"
-                          ? "Solicitud Resuelta"
+                          ? "Resuelta"
                           : `Yo te ayudo (${prob.applicantsCount})`}
                       </span>
                     </button>
@@ -1556,27 +1700,32 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* VISUAL 3-STEP FORM SECTION ("PEDIR AYUDA EN 3 PASOS") */}
+      {/* ===================================================================== */}
+      {/* VISUAL 3-STEP FORM SECTION ("PEDIR AYUDA EN 3 PASOS")                 */}
+      {/* ===================================================================== */}
       <section
         id="pedir-ayuda"
         className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12"
       >
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden">
-          <div className="bg-blue-600 px-6 py-6 sm:px-10 sm:py-8 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white rounded-[32px] border border-[#E7E5E4] shadow-bento overflow-hidden">
+          <div className="bg-[#F5F4F0] border-b border-[#E7E5E4] px-6 py-7 sm:px-10 sm:py-9 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold uppercase tracking-wider mb-2">
-                Conectado a Base de Datos en Tiempo Real
+              <span className="inline-block px-3.5 py-1 rounded-full bg-[#E6F2EE] text-[#0F4C3A] text-xs font-bold uppercase tracking-wider mb-2">
+                Sin Fricción • Trato Directo
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold">
-                Pide Ayuda en 3 Sencillos Pasos
+              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight">
+                Publica lo que necesitas en{" "}
+                <span className="font-editorial-serif italic font-normal text-[#0F4C3A] text-[1.12em]">
+                  3 sencillos pasos
+                </span>
               </h2>
-              <p className="text-blue-100 text-sm mt-1">
-                Describe tu necesidad, guárdala en Supabase y recibe propuestas
-                de solucionadores cercanos.
+              <p className="text-[#57534E] text-sm mt-1">
+                Tu solicitud se guarda al instante en el muro vecinal para que
+                los solucionadores disponibles te contacten.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 tabular-nums">
               {[1, 2, 3].map((stepNum) => (
                 <button
                   key={stepNum}
@@ -1585,12 +1734,12 @@ export default function HomePage() {
                     setHelpSubmittedSuccess(false);
                     setHelpStep(stepNum as 1 | 2 | 3);
                   }}
-                  className={`w-10 h-10 rounded-xl font-extrabold text-sm flex items-center justify-center transition-all ${
+                  className={`w-11 h-11 rounded-2xl font-display font-extrabold text-sm flex items-center justify-center transition-all ${
                     helpStep === stepNum
-                      ? "bg-white text-blue-600 shadow-md scale-105"
+                      ? "bg-[#D95D39] text-white shadow-sm scale-105"
                       : helpStep > stepNum
-                      ? "bg-emerald-400 text-slate-950"
-                      : "bg-blue-700/70 text-blue-200"
+                      ? "bg-[#0F4C3A] text-white"
+                      : "bg-white text-[#57534E] border border-[#E7E5E4]"
                   }`}
                 >
                   {helpStep > stepNum ? "✓" : stepNum}
@@ -1602,22 +1751,22 @@ export default function HomePage() {
           <div className="p-6 sm:p-10">
             {helpSubmittedSuccess ? (
               <div className="text-center py-8 max-w-lg mx-auto">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle2 className="w-10 h-10" />
+                <div className="w-16 h-16 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle2 strokeWidth={1.75} className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-extrabold text-slate-900 mb-2">
-                  ¡Tu solicitud ya está publicada!
+                <h3 className="font-display text-2xl font-extrabold text-[#18181B] mb-2">
+                  ¡Tu solicitud ya está en el Muro Vecinal!
                 </h3>
                 {helpSaveStatus && (
-                  <p className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 mb-4">
+                  <p className="text-xs font-semibold text-[#0F4C3A] bg-[#E6F2EE] border border-[#0F4C3A]/20 rounded-2xl px-4 py-3 mb-4">
                     {helpSaveStatus}
                   </p>
                 )}
-                <p className="text-sm text-slate-600 mb-6">
-                  Tu problema ya aparece en la parte superior del{" "}
+                <p className="text-sm text-[#57534E] mb-6">
+                  Puedes ver tu publicación ahora mismo en el{" "}
                   <a
                     href="#problemas"
-                    className="text-blue-600 font-semibold underline"
+                    className="text-[#0F4C3A] font-bold underline"
                   >
                     Tablero de Problemas por Resolver
                   </a>
@@ -1626,14 +1775,14 @@ export default function HomePage() {
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <a
                     href="#problemas"
-                    className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-bold hover:bg-slate-800"
+                    className="px-6 py-3 rounded-2xl bg-[#0F4C3A] text-white text-sm font-bold hover:bg-[#0B3B2D]"
                   >
                     Ver mi solicitud en el tablero
                   </a>
                   <button
                     type="button"
                     onClick={resetHelpWizard}
-                    className="px-5 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-sm font-semibold hover:bg-slate-200"
+                    className="px-6 py-3 rounded-2xl bg-[#F5F4F0] text-[#18181B] text-sm font-semibold hover:bg-[#E7E5E4]"
                   >
                     Publicar otro problema
                   </button>
@@ -1644,19 +1793,19 @@ export default function HomePage() {
                 {helpStep === 1 && (
                   <div className="space-y-6">
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#D95D39]">
                         Paso 1 de 3
                       </span>
-                      <h3 className="text-xl font-bold text-slate-900 mt-0.5">
-                        ¿Con qué problema necesitas ayuda?
+                      <h3 className="font-display text-xl font-bold text-[#18181B] mt-0.5">
+                        ¿Con qué problema necesitas ayuda hoy?
                       </h3>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      <label className="block text-sm font-semibold text-[#18181B] mb-2.5">
                         1. Elige la categoría que mejor describa tu necesidad:
                       </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                         {CATEGORIES.map((cat) => {
                           const active = helpCategory === cat.id;
                           return (
@@ -1664,16 +1813,16 @@ export default function HomePage() {
                               key={cat.id}
                               type="button"
                               onClick={() => setHelpCategory(cat.id)}
-                              className={`p-3 rounded-xl border text-left transition-all flex flex-col items-start gap-1.5 ${
+                              className={`p-4 rounded-2xl border text-left transition-all flex flex-col items-start gap-2 ${
                                 active
-                                  ? "border-blue-600 bg-blue-50/70 text-blue-900 ring-2 ring-blue-600/20"
-                                  : "border-slate-200 hover:border-slate-300 text-slate-700"
+                                  ? "border-[#0F4C3A] bg-[#E6F2EE] text-[#0F4C3A] ring-2 ring-[#0F4C3A]/15"
+                                  : "border-[#E7E5E4] bg-[#FAFAF9] hover:bg-white text-[#18181B]"
                               }`}
                             >
-                              <div className="text-blue-600">
+                              <div className="text-[#0F4C3A]">
                                 {getCategoryIcon(cat.id, "w-5 h-5")}
                               </div>
-                              <span className="font-bold text-xs sm:text-sm">
+                              <span className="font-display font-bold text-xs sm:text-sm">
                                 {cat.name}
                               </span>
                             </button>
@@ -1683,28 +1832,28 @@ export default function HomePage() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                      <label className="block text-sm font-semibold text-[#18181B] mb-1.5">
                         2. Título breve de lo que necesitas:
                       </label>
                       <input
                         type="text"
                         value={helpTitle}
                         onChange={(e) => setHelpTitle(e.target.value)}
-                        placeholder="Ej. Cambiar llave de agua del fregadero que gotea"
-                        className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="Ej. Cambiar llave de agua del fregadero o dar mantenimiento a minisplit"
+                        className="w-full px-4 py-3.5 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] focus:bg-white text-sm focus:outline-none focus:border-[#0F4C3A]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                      <label className="block text-sm font-semibold text-[#18181B] mb-1.5">
                         3. Cuéntanos un poco más de detalle:
                       </label>
                       <textarea
                         rows={3}
                         value={helpDescription}
                         onChange={(e) => setHelpDescription(e.target.value)}
-                        placeholder="Ej. Ya compré la llave nueva pero no tengo herramienta para quitar la anterior..."
-                        className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="Ej. Ya compré el repuesto pero necesito alguien con herramienta hoy por la tarde..."
+                        className="w-full px-4 py-3.5 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] focus:bg-white text-sm focus:outline-none focus:border-[#0F4C3A]"
                       />
                     </div>
 
@@ -1712,10 +1861,10 @@ export default function HomePage() {
                       <button
                         type="button"
                         onClick={() => setHelpStep(2)}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md shadow-blue-600/20"
+                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-bold text-sm transition-all active:scale-95"
                       >
                         <span>Siguiente: Dónde y Cuándo</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -1724,32 +1873,35 @@ export default function HomePage() {
                 {helpStep === 2 && (
                   <div className="space-y-6">
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#D95D39]">
                         Paso 2 de 3
                       </span>
-                      <h3 className="text-xl font-bold text-slate-900 mt-0.5">
-                        ¿Dónde estás ubicado y qué tan urgente es?
+                      <h3 className="font-display text-xl font-bold text-[#18181B] mt-0.5">
+                        ¿En qué colonia estás y qué tan urgente es?
                       </h3>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-1.5">
-                        Colonia, Barrio o Zona de referencia:
+                      <label className="block text-sm font-semibold text-[#18181B] mb-1.5">
+                        Colonia y Municipio en Nuevo León:
                       </label>
                       <div className="relative">
-                        <MapPin className="w-5 h-5 text-slate-400 absolute left-3.5 top-3" />
+                        <MapPin
+                          strokeWidth={1.75}
+                          className="w-5 h-5 text-[#57534E] absolute left-4 top-3.5"
+                        />
                         <input
                           type="text"
                           value={helpLocation}
                           onChange={(e) => setHelpLocation(e.target.value)}
-                          placeholder="Ej. Col. Del Valle, cerca del Parque Hundido"
-                          className="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                          placeholder="Ej. Col. Cumbres 2do Sector, Monterrey"
+                          className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] focus:bg-white text-sm focus:outline-none focus:border-[#0F4C3A]"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      <label className="block text-sm font-semibold text-[#18181B] mb-2.5">
                         Nivel de urgencia:
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1773,16 +1925,16 @@ export default function HomePage() {
                             key={u.id}
                             type="button"
                             onClick={() => setHelpUrgency(u.id)}
-                            className={`p-4 rounded-xl border text-left transition-all ${
+                            className={`p-4 rounded-2xl border text-left transition-all ${
                               helpUrgency === u.id
-                                ? "border-blue-600 bg-blue-50/70 ring-2 ring-blue-600/20"
-                                : "border-slate-200 hover:border-slate-300"
+                                ? "border-[#0F4C3A] bg-[#E6F2EE] text-[#0F4C3A]"
+                                : "border-[#E7E5E4] bg-[#FAFAF9] hover:bg-white"
                             }`}
                           >
-                            <span className="block font-bold text-sm text-slate-900">
+                            <span className="block font-display font-bold text-sm text-[#18181B]">
                               {u.id}
                             </span>
-                            <span className="block text-xs text-slate-500 mt-1">
+                            <span className="block text-xs text-[#57534E] mt-1">
                               {u.desc}
                             </span>
                           </button>
@@ -1794,19 +1946,19 @@ export default function HomePage() {
                       <button
                         type="button"
                         onClick={() => setHelpStep(1)}
-                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm"
+                        className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#18181B] font-semibold text-sm"
                       >
-                        <ArrowLeft className="w-4 h-4" />
+                        <ArrowLeft strokeWidth={1.75} className="w-4 h-4" />
                         <span>Anterior</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setHelpStep(3)}
-                        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md shadow-blue-600/20"
+                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-bold text-sm"
                       >
                         <span>Siguiente: Presupuesto</span>
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -1815,60 +1967,64 @@ export default function HomePage() {
                 {helpStep === 3 && (
                   <div className="space-y-6">
                     <div>
-                      <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#D95D39]">
                         Paso 3 de 3
                       </span>
-                      <h3 className="text-xl font-bold text-slate-900 mt-0.5">
+                      <h3 className="font-display text-xl font-bold text-[#18181B] mt-0.5">
                         Presupuesto estimado y confirmación
                       </h3>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                        <label className="block text-sm font-semibold text-[#18181B] mb-1.5">
                           ¿Cuánto estimas pagar por la ayuda?
                         </label>
                         <input
                           type="text"
                           value={helpBudget}
                           onChange={(e) => setHelpBudget(e.target.value)}
-                          placeholder="Ej. $300 - $500 MXN"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                          placeholder="Ej. $350 - $500 MXN"
+                          className="w-full px-4 py-3.5 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] focus:bg-white text-sm tabular-nums focus:outline-none focus:border-[#0F4C3A]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+                        <label className="block text-sm font-semibold text-[#18181B] mb-1.5">
                           Tu nombre:
                         </label>
                         <input
                           type="text"
                           value={helpClientName}
                           onChange={(e) => setHelpClientName(e.target.value)}
-                          placeholder="Ej. Ana García"
-                          className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                          placeholder="Ej. Ana Garza"
+                          className="w-full px-4 py-3.5 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] focus:bg-white text-sm focus:outline-none focus:border-[#0F4C3A]"
                         />
                       </div>
                     </div>
 
-                    <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 text-xs sm:text-sm space-y-1.5">
-                      <p className="font-bold text-slate-800">
-                        Resumen de tu solicitud:
+                    <div className="bg-[#F5F4F0] rounded-2xl p-5 border border-[#E7E5E4] text-xs sm:text-sm space-y-1.5">
+                      <p className="font-display font-bold text-[#18181B]">
+                        Resumen de tu publicación:
                       </p>
-                      <p className="text-slate-600">
-                        <span className="font-semibold">Problema:</span>{" "}
+                      <p className="text-[#57534E]">
+                        <span className="font-semibold text-[#18181B]">
+                          Problema:
+                        </span>{" "}
                         {helpTitle || "Servicio general a domicilio"} (
                         {CATEGORIES.find((c) => c.id === helpCategory)?.name})
                       </p>
-                      <p className="text-slate-600">
-                        <span className="font-semibold">
+                      <p className="text-[#57534E]">
+                        <span className="font-semibold text-[#18181B]">
                           Ubicación y Urgencia:
                         </span>{" "}
-                        {helpLocation || "Zona Centro"} • {helpUrgency}
+                        {helpLocation || "Monterrey, N.L."} • {helpUrgency}
                       </p>
-                      <p className="text-slate-600">
-                        <span className="font-semibold">Presupuesto:</span>{" "}
-                        <span className="text-emerald-700 font-bold">
+                      <p className="text-[#57534E] tabular-nums">
+                        <span className="font-semibold text-[#18181B]">
+                          Presupuesto:
+                        </span>{" "}
+                        <span className="text-[#0F4C3A] font-bold">
                           {helpBudget}
                         </span>
                       </p>
@@ -1878,25 +2034,21 @@ export default function HomePage() {
                       <button
                         type="button"
                         onClick={() => setHelpStep(2)}
-                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm"
+                        className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#18181B] font-semibold text-sm"
                       >
-                        <ArrowLeft className="w-4 h-4" />
+                        <ArrowLeft strokeWidth={1.75} className="w-4 h-4" />
                         <span>Anterior</span>
                       </button>
 
                       <button
                         type="submit"
                         disabled={helpSubmitting}
-                        className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-extrabold text-sm shadow-lg shadow-emerald-600/25"
+                        className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] disabled:opacity-60 text-white font-extrabold text-sm shadow-sm transition-all active:scale-95"
                       >
-                        {helpSubmitting ? (
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                        ) : (
-                          <CheckCircle2 className="w-5 h-5" />
-                        )}
+                        <CheckCircle2 strokeWidth={1.75} className="w-5 h-5" />
                         <span>
                           {helpSubmitting
-                            ? "Guardando en Supabase..."
+                            ? "Guardando en vivo..."
                             : "Publicar Solicitud Ahora"}
                         </span>
                       </button>
@@ -1909,18 +2061,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CALL TO ACTION BANNER FOR SOLUCIONADORES */}
-      <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-14">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
-          <div className="space-y-2 max-w-xl text-center md:text-left">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-bold uppercase tracking-wider">
-              <Briefcase className="w-3.5 h-3.5" /> Convierte tus habilidades en
-              clientes diarios en Nuevo León
+      {/* ===================================================================== */}
+      {/* EDITORIAL CALL TO ACTION BANNER FOR SOLUCIONADORES                    */}
+      {/* ===================================================================== */}
+      <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="bg-[#F5F4F0] border border-[#E7E5E4] rounded-[32px] p-7 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-bento">
+          <div className="space-y-3 max-w-xl text-center md:text-left">
+            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#E6F2EE] text-[#0F4C3A] text-xs font-bold uppercase tracking-wider">
+              <Briefcase strokeWidth={1.75} className="w-3.5 h-3.5" /> Trabajo
+              Independiente en Nuevo León
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold">
-              ¿Eres plomero, técnico, haces limpieza, fletes o mandados?
+            <h2 className="font-display text-2xl sm:text-4xl font-extrabold text-[#18181B] tracking-tight">
+              ¿Eres plomero, técnico, haces limpieza, fletes o{" "}
+              <span className="font-editorial-serif italic font-normal text-[#0F4C3A] text-[1.1em]">
+                mandados
+              </span>
+              ?
             </h2>
-            <p className="text-blue-100 text-sm sm:text-base">
+            <p className="text-[#57534E] text-sm sm:text-base leading-relaxed">
               Anúnciate gratis en ManoAmiga, recibe solicitudes directas en tu
               WhatsApp y quédate con el 100% de tu trabajo. Tú eliges tus zonas
               y tus tarifas.
@@ -1933,38 +2091,38 @@ export default function HomePage() {
               setRegSaveStatus(null);
               setIsRegisterSolucionadorOpen(true);
             }}
-            className="px-6 py-4 rounded-2xl bg-white hover:bg-blue-50 text-blue-700 font-extrabold text-sm sm:text-base shadow-lg transition-all shrink-0 flex items-center gap-2"
+            className="px-7 py-4 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-extrabold text-sm sm:text-base shadow-sm hover:-translate-y-0.5 transition-all shrink-0 flex items-center gap-2.5 active:scale-95"
           >
-            <UserPlus className="w-5 h-5" />
+            <UserPlus strokeWidth={1.75} className="w-5 h-5" />
             <span>Registrarme Gratis como Solucionador</span>
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight strokeWidth={1.75} className="w-4 h-4" />
           </button>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-slate-900 text-slate-400 py-10 px-4 border-t border-slate-800 mt-auto">
+      <footer className="bg-white text-[#57534E] py-10 px-4 border-t border-[#E7E5E4] mt-auto">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white">
-              <HeartHandshake className="w-5 h-5" />
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-[#0F4C3A] flex items-center justify-center text-white">
+              <HeartHandshake strokeWidth={1.75} className="w-4 h-4" />
             </div>
-            <span className="font-bold text-white text-base">
-              Mano<span className="text-blue-400">Amiga</span>
+            <span className="font-display font-bold text-[#18181B] text-base">
+              Mano<span className="text-[#0F4C3A]">Amiga</span>
             </span>
-            <span>— Ayuda rápida y confiable para todos.</span>
+            <span>— Hecho para conectar vecinos en Nuevo León, México.</span>
           </div>
-          <div className="flex gap-6">
-            <a href="#categorias" className="hover:text-white">
+          <div className="flex gap-6 font-medium">
+            <a href="#categorias" className="hover:text-[#18181B]">
               Categorías
             </a>
-            <a href="#solucionadores" className="hover:text-white">
+            <a href="#solucionadores" className="hover:text-[#18181B]">
               Solucionadores
             </a>
-            <a href="#problemas" className="hover:text-white">
+            <a href="#problemas" className="hover:text-[#18181B]">
               Problemas Activos
             </a>
-            <a href="#pedir-ayuda" className="hover:text-white">
+            <a href="#pedir-ayuda" className="hover:text-[#18181B]">
               Pedir Ayuda
             </a>
           </div>
@@ -1972,29 +2130,29 @@ export default function HomePage() {
       </footer>
 
       {/* MOBILE STICKY BOTTOM BAR */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-slate-200 px-3 py-2 flex items-center justify-around md:hidden shadow-lg">
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-[#FAFAF9]/95 backdrop-blur-md border-t border-[#E7E5E4] px-3 py-2.5 flex items-center justify-around md:hidden shadow-lg">
         <a
           href="#solucionadores"
-          className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-slate-600 hover:text-blue-600"
+          className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-[#57534E] hover:text-[#0F4C3A]"
         >
-          <Search className="w-5 h-5" />
+          <Search strokeWidth={1.75} className="w-5 h-5" />
           <span>Explorar</span>
         </a>
         <a
           href="#problemas"
-          className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-slate-600 hover:text-blue-600"
+          className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-[#57534E] hover:text-[#0F4C3A] tabular-nums"
         >
-          <Briefcase className="w-5 h-5" />
-          <span>Problemas ({problemas.length})</span>
+          <Briefcase strokeWidth={1.75} className="w-5 h-5" />
+          <span>Muro ({problemas.length})</span>
         </a>
         <button
           onClick={() => {
             resetHelpWizard();
             setIsPedirAyudaModalOpen(true);
           }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 text-white text-xs font-bold shadow-md shadow-blue-600/30"
+          className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-[#D95D39] text-white text-xs font-bold shadow-sm"
         >
-          <PlusCircle className="w-4 h-4" />
+          <PlusCircle strokeWidth={1.75} className="w-4 h-4" />
           <span>Pedir Ayuda</span>
         </button>
         <button
@@ -2003,9 +2161,9 @@ export default function HomePage() {
             setRegSaveStatus(null);
             setIsRegisterSolucionadorOpen(true);
           }}
-          className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-slate-600 hover:text-blue-600"
+          className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-[#57534E] hover:text-[#0F4C3A]"
         >
-          <UserPlus className="w-5 h-5" />
+          <UserPlus strokeWidth={1.75} className="w-5 h-5" />
           <span>Soy Experto</span>
         </button>
       </div>
@@ -2014,33 +2172,32 @@ export default function HomePage() {
       {/* MODAL 0: AUTENTICACIÓN SUPABASE (LOGIN / REGISTRO)        */}
       {/* ========================================================= */}
       {isAuthModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
             <button
               onClick={() => setIsAuthModalOpen(false)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600"
+              className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
             >
-              <X className="w-5 h-5" />
+              <X strokeWidth={1.75} className="w-5 h-5" />
             </button>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold mb-3">
-              <ShieldCheck className="w-3.5 h-3.5" /> Acceso Seguro con Supabase
-              Auth
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6F2EE] text-[#0F4C3A] text-xs font-bold mb-3">
+              <ShieldCheck strokeWidth={1.75} className="w-3.5 h-3.5" /> Acceso
+              Seguro con Supabase Auth
             </div>
 
-            <h3 className="text-2xl font-extrabold text-slate-900 mb-1">
+            <h3 className="font-display text-2xl font-extrabold text-[#18181B] mb-1">
               {authMode === "login"
                 ? "Iniciar Sesión en ManoAmiga"
                 : "Crear Cuenta Gratis"}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500 mb-5">
+            <p className="text-xs sm:text-sm text-[#57534E] mb-5">
               {authMode === "login"
                 ? "Ingresa con tu correo y contraseña para gestionar tus solicitudes o perfil."
-                : "Regístrate en segundos para pedir ayuda u ofrecer tus servicios."}
+                : "Regístrate en segundos para pedir ayuda u ofrecer tus servicios en Nuevo León."}
             </p>
 
-            {/* Toggle Tabs */}
-            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl mb-5">
+            <div className="grid grid-cols-2 gap-2 p-1 bg-[#F5F4F0] rounded-2xl mb-5 border border-[#E7E5E4]">
               <button
                 type="button"
                 onClick={() => {
@@ -2048,10 +2205,10 @@ export default function HomePage() {
                   setAuthError(null);
                   setAuthSuccessMsg(null);
                 }}
-                className={`py-2 rounded-lg text-xs font-bold transition-all ${
+                className={`py-2 rounded-xl text-xs font-bold transition-all ${
                   authMode === "login"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-600"
+                    ? "bg-white text-[#18181B] shadow-sm"
+                    : "text-[#57534E]"
                 }`}
               >
                 Iniciar Sesión
@@ -2063,10 +2220,10 @@ export default function HomePage() {
                   setAuthError(null);
                   setAuthSuccessMsg(null);
                 }}
-                className={`py-2 rounded-lg text-xs font-bold transition-all ${
+                className={`py-2 rounded-xl text-xs font-bold transition-all ${
                   authMode === "register"
-                    ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-600"
+                    ? "bg-white text-[#18181B] shadow-sm"
+                    : "text-[#57534E]"
                 }`}
               >
                 Crear Cuenta
@@ -2074,13 +2231,13 @@ export default function HomePage() {
             </div>
 
             {authError && (
-              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+              <div className="mb-4 p-3.5 rounded-2xl bg-[#FFF1EC] border border-[#D95D39]/30 text-[#C2410C] text-xs font-medium">
                 {authError}
               </div>
             )}
 
             {authSuccessMsg && (
-              <div className="mb-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
+              <div className="mb-4 p-3.5 rounded-2xl bg-[#E6F2EE] border border-[#0F4C3A]/20 text-[#0F4C3A] text-xs font-semibold">
                 {authSuccessMsg}
               </div>
             )}
@@ -2088,7 +2245,7 @@ export default function HomePage() {
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               {authMode === "register" && (
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-[#18181B] mb-1">
                     Tu nombre completo
                   </label>
                   <input
@@ -2097,13 +2254,13 @@ export default function HomePage() {
                     value={authFullName}
                     onChange={(e) => setAuthFullName(e.target.value)}
                     placeholder="Ej. Jorge Ramírez"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-[#18181B] mb-1">
                   Correo electrónico
                 </label>
                 <input
@@ -2112,12 +2269,12 @@ export default function HomePage() {
                   value={authEmail}
                   onChange={(e) => setAuthEmail(e.target.value)}
                   placeholder="tucorreo@ejemplo.com"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-[#18181B] mb-1">
                   Contraseña (mínimo 6 caracteres)
                 </label>
                 <input
@@ -2127,21 +2284,20 @@ export default function HomePage() {
                   value={authPassword}
                   onChange={(e) => setAuthPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={authLoading}
-                className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-extrabold text-sm shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] disabled:opacity-60 text-white font-extrabold text-sm transition-all"
               >
-                {authLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-                <span>
-                  {authMode === "login"
-                    ? "Entrar a mi Cuenta"
-                    : "Registrarme Ahora"}
-                </span>
+                {authLoading
+                  ? "Procesando..."
+                  : authMode === "login"
+                  ? "Entrar a mi Cuenta"
+                  : "Registrarme Ahora"}
               </button>
             </form>
           </div>
@@ -2152,92 +2308,94 @@ export default function HomePage() {
       {/* MODAL 1: PERFIL DETALLADO DEL SOLUCIONADOR + RESEÑAS       */}
       {/* ========================================================= */}
       {selectedSolucionador && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-8">
             <button
               onClick={() => setSelectedSolucionador(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600"
+              className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
             >
-              <X className="w-5 h-5" />
+              <X strokeWidth={1.75} className="w-5 h-5" />
             </button>
 
             <div className="flex items-center gap-4 mb-5">
               <img
                 src={selectedSolucionador.avatarUrl}
                 alt={selectedSolucionador.name}
-                className="w-20 h-20 rounded-2xl object-cover border-2 border-blue-100"
+                className="w-20 h-20 rounded-2xl object-cover border border-[#E7E5E4]"
               />
               <div>
-                <div className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full mb-1">
-                  <ShieldCheck className="w-3.5 h-3.5" /> Perfil Verificado
+                <div className="inline-flex items-center gap-1 text-xs font-bold text-[#0F4C3A] bg-[#E6F2EE] px-2.5 py-0.5 rounded-full mb-1">
+                  <ShieldCheck strokeWidth={1.75} className="w-3.5 h-3.5" />{" "}
+                  Perfil Verificado
                 </div>
-                <h3 className="text-xl font-extrabold text-slate-900">
+                <h3 className="font-display text-xl font-extrabold text-[#18181B]">
                   {selectedSolucionador.name}
                 </h3>
-                <p className="text-sm text-slate-600">
+                <p className="text-sm text-[#57534E]">
                   {selectedSolucionador.role}
                 </p>
               </div>
             </div>
 
-            <p className="text-sm text-slate-700 leading-relaxed mb-4">
+            <p className="text-sm text-[#57534E] leading-relaxed mb-4">
               {selectedSolucionador.bio}
             </p>
 
-            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 mb-5 space-y-2 text-xs sm:text-sm">
+            <div className="bg-[#F5F4F0] rounded-2xl p-4 border border-[#E7E5E4] mb-5 space-y-2 text-xs sm:text-sm tabular-nums">
               <div className="flex justify-between">
-                <span className="text-slate-500">Calificación media:</span>
-                <span className="font-bold text-slate-900 flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                <span className="text-[#57534E]">Calificación media:</span>
+                <span className="font-bold text-[#18181B] flex items-center gap-1">
+                  <Star
+                    strokeWidth={1.75}
+                    className="w-4 h-4 fill-[#D97706] text-[#D97706]"
+                  />
                   {selectedSolucionador.rating.toFixed(1)} (
                   {selectedSolucionador.reviewsCount} reseñas)
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Tarifa estimada:</span>
-                <span className="font-bold text-emerald-700">
+                <span className="text-[#57534E]">Tarifa base:</span>
+                <span className="font-bold text-[#0F4C3A]">
                   {selectedSolucionador.hourlyRate}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Zona de cobertura:</span>
-                <span className="font-medium text-slate-800">
+                <span className="text-[#57534E]">Zona de cobertura:</span>
+                <span className="font-medium text-[#18181B]">
                   {selectedSolucionador.location}
                 </span>
               </div>
             </div>
 
-            {/* Reviews List */}
             <div className="mb-5">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-                Reseñas de clientes ({selectedSolucionador.reviews.length})
+              <h4 className="text-xs font-bold uppercase tracking-wider text-[#57534E] mb-3">
+                Reseñas de vecinos ({selectedSolucionador.reviews.length})
               </h4>
               <div className="space-y-2.5 max-h-44 overflow-y-auto pr-1">
                 {selectedSolucionador.reviews.map((rev) => (
                   <div
                     key={rev.id}
-                    className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs sm:text-sm"
+                    className="p-3.5 rounded-2xl bg-[#FAFAF9] border border-[#E7E5E4] text-xs sm:text-sm"
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="font-bold text-slate-800">
+                      <span className="font-bold text-[#18181B]">
                         {rev.author}
                       </span>
-                      <span className="text-amber-500 font-bold text-xs">
+                      <span className="text-[#D97706] font-bold text-xs">
                         {"★".repeat(rev.rating)}
                       </span>
                     </div>
-                    <p className="text-slate-600">{rev.comment}</p>
+                    <p className="text-[#57534E]">{rev.comment}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Add Review Form (`public.resenas`) */}
             <form
               onSubmit={handleAddReview}
-              className="mb-5 p-3.5 rounded-2xl bg-blue-50/50 border border-blue-100 space-y-2.5"
+              className="mb-5 p-4 rounded-2xl bg-[#F5F4F0] border border-[#E7E5E4] space-y-2.5"
             >
-              <p className="text-xs font-bold text-slate-700">
+              <p className="text-xs font-bold text-[#18181B]">
                 Dejar una reseña para {selectedSolucionador.name.split(" ")[0]}:
               </p>
               <div className="grid grid-cols-2 gap-2">
@@ -2246,12 +2404,12 @@ export default function HomePage() {
                   value={newReviewAuthor}
                   onChange={(e) => setNewReviewAuthor(e.target.value)}
                   placeholder="Tu nombre"
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white"
+                  className="px-3 py-2 rounded-xl border border-[#E7E5E4] text-xs bg-white"
                 />
                 <select
                   value={newReviewRating}
                   onChange={(e) => setNewReviewRating(Number(e.target.value))}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white font-semibold"
+                  className="px-3 py-2 rounded-xl border border-[#E7E5E4] text-xs bg-white font-semibold"
                 >
                   <option value={5}>★★★★★ (5 Excelente)</option>
                   <option value={4}>★★★★☆ (4 Muy bueno)</option>
@@ -2265,33 +2423,31 @@ export default function HomePage() {
                   value={newReviewComment}
                   onChange={(e) => setNewReviewComment(e.target.value)}
                   placeholder="Escribe tu experiencia..."
-                  className="flex-1 px-3 py-1.5 rounded-lg border border-slate-200 text-xs bg-white"
+                  className="flex-1 px-3 py-2 rounded-xl border border-[#E7E5E4] text-xs bg-white"
                 />
                 <button
                   type="submit"
                   disabled={reviewSubmitting}
-                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold shrink-0"
+                  className="px-4 py-2 rounded-xl bg-[#0F4C3A] text-white text-xs font-bold shrink-0"
                 >
                   Publicar
                 </button>
               </div>
             </form>
 
-            <div className="flex gap-3">
-              <button
-                onClick={() => {
-                  const sol = selectedSolucionador;
-                  setSelectedSolucionador(null);
-                  setContactMessage("");
-                  setContactSent(false);
-                  setContactModalSolucionador(sol);
-                }}
-                className="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-blue-600/20"
-              >
-                <MessageCircle className="w-4 h-4" />
-                Contactar a {selectedSolucionador.name.split(" ")[0]}
-              </button>
-            </div>
+            <button
+              onClick={() => {
+                const sol = selectedSolucionador;
+                setSelectedSolucionador(null);
+                setContactMessage("");
+                setContactSent(false);
+                setContactModalSolucionador(sol);
+              }}
+              className="w-full py-3.5 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-sm"
+            >
+              <MessageCircle strokeWidth={1.75} className="w-4 h-4" />
+              Contactar a {selectedSolucionador.name.split(" ")[0]}
+            </button>
           </div>
         </div>
       )}
@@ -2300,34 +2456,34 @@ export default function HomePage() {
       {/* MODAL 2: CONTACTAR SOLUCIONADOR                           */}
       {/* ========================================================= */}
       {contactModalSolucionador && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
             <button
               onClick={() => setContactModalSolucionador(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600"
+              className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
             >
-              <X className="w-5 h-5" />
+              <X strokeWidth={1.75} className="w-5 h-5" />
             </button>
 
             {contactSent ? (
               <div className="text-center py-4">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3">
-                  <CheckCircle2 className="w-8 h-8" />
+                <div className="w-14 h-14 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] flex items-center justify-center mx-auto mb-3">
+                  <CheckCircle2 strokeWidth={1.75} className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-extrabold text-slate-900 mb-1">
+                <h3 className="font-display text-xl font-extrabold text-[#18181B] mb-1">
                   ¡Mensaje enviado a {contactModalSolucionador.name}!
                 </h3>
-                <p className="text-sm text-slate-600 mb-5">
+                <p className="text-sm text-[#57534E] mb-5">
                   {contactModalSolucionador.responseTime}. También puedes
                   llamarle o escribirle directo por WhatsApp al{" "}
-                  <span className="font-bold text-slate-800">
+                  <span className="font-bold text-[#18181B] tabular-nums">
                     {contactModalSolucionador.phone}
                   </span>
                   .
                 </p>
                 <button
                   onClick={() => setContactModalSolucionador(null)}
-                  className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm"
+                  className="w-full py-3.5 rounded-2xl bg-[#0F4C3A] text-white font-bold text-sm"
                 >
                   Listo, entendido
                 </button>
@@ -2338,13 +2494,13 @@ export default function HomePage() {
                   <img
                     src={contactModalSolucionador.avatarUrl}
                     alt={contactModalSolucionador.name}
-                    className="w-12 h-12 rounded-xl object-cover"
+                    className="w-12 h-12 rounded-2xl object-cover border border-[#E7E5E4]"
                   />
                   <div>
-                    <h3 className="text-lg font-extrabold text-slate-900">
+                    <h3 className="font-display text-lg font-extrabold text-[#18181B]">
                       Contactar a {contactModalSolucionador.name}
                     </h3>
-                    <p className="text-xs text-emerald-600 font-semibold">
+                    <p className="text-xs text-[#0F4C3A] font-semibold">
                       {contactModalSolucionador.responseTime}
                     </p>
                   </div>
@@ -2358,7 +2514,7 @@ export default function HomePage() {
                   className="space-y-4"
                 >
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-500 mb-1.5">
+                    <label className="block text-xs font-bold uppercase text-[#57534E] mb-1.5">
                       Describe brevemente lo que necesitas:
                     </label>
                     <textarea
@@ -2369,25 +2525,28 @@ export default function HomePage() {
                       placeholder={`Hola ${
                         contactModalSolucionador.name.split(" ")[0]
                       }, necesito ayuda hoy con...`}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                     />
                   </div>
 
-                  <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex items-center justify-between text-xs">
-                    <span className="text-slate-600 flex items-center gap-1.5">
-                      <Phone className="w-4 h-4 text-blue-600" /> Teléfono /
+                  <div className="bg-[#F5F4F0] p-3.5 rounded-2xl border border-[#E7E5E4] flex items-center justify-between text-xs tabular-nums">
+                    <span className="text-[#57534E] flex items-center gap-1.5">
+                      <Phone
+                        strokeWidth={1.75}
+                        className="w-4 h-4 text-[#0F4C3A]"
+                      />{" "}
                       WhatsApp directo:
                     </span>
-                    <span className="font-bold text-slate-900">
+                    <span className="font-bold text-[#18181B]">
                       {contactModalSolucionador.phone}
                     </span>
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md shadow-blue-600/20 flex items-center justify-center gap-2"
+                    className="w-full py-3.5 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm flex items-center justify-center gap-2"
                   >
-                    <MessageCircle className="w-4 h-4" />
+                    <MessageCircle strokeWidth={1.75} className="w-4 h-4" />
                     Enviar Solicitud Directa
                   </button>
                 </form>
@@ -2401,43 +2560,43 @@ export default function HomePage() {
       {/* MODAL 3: POSTULARSE A UN PROBLEMA ("YO TE AYUDO")          */}
       {/* ========================================================= */}
       {applyModalProblema && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
             <button
               onClick={() => setApplyModalProblema(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600"
+              className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
             >
-              <X className="w-5 h-5" />
+              <X strokeWidth={1.75} className="w-5 h-5" />
             </button>
 
             {applySent ? (
               <div className="text-center py-4">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3">
-                  <CheckCircle2 className="w-8 h-8" />
+                <div className="w-14 h-14 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] flex items-center justify-center mx-auto mb-3">
+                  <CheckCircle2 strokeWidth={1.75} className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-extrabold text-slate-900 mb-1">
+                <h3 className="font-display text-xl font-extrabold text-[#18181B] mb-1">
                   ¡Propuesta enviada a {applyModalProblema.clientName}!
                 </h3>
-                <p className="text-sm text-slate-600 mb-5">
-                  Hemos actualizado el contador de postulantes y cambiado el
-                  estado a <span className="font-bold">En proceso</span>.
+                <p className="text-sm text-[#57534E] mb-5">
+                  Actualizamos el contador de postulantes y marcamos la
+                  solicitud <span className="font-bold">En proceso</span>.
                 </p>
                 <button
                   onClick={() => setApplyModalProblema(null)}
-                  className="w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm"
+                  className="w-full py-3.5 rounded-2xl bg-[#0F4C3A] text-white font-bold text-sm"
                 >
                   Volver al tablero
                 </button>
               </div>
             ) : (
               <>
-                <span className="inline-block px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-bold mb-2">
+                <span className="inline-block px-3 py-1 rounded-full bg-[#E6F2EE] text-[#0F4C3A] text-xs font-bold mb-2">
                   Postularme como Solucionador
                 </span>
-                <h3 className="text-lg font-extrabold text-slate-900 mb-1">
+                <h3 className="font-display text-lg font-extrabold text-[#18181B] mb-1">
                   {applyModalProblema.title}
                 </h3>
-                <p className="text-xs text-slate-500 mb-4">
+                <p className="text-xs text-[#57534E] mb-4">
                   Solicitado por {applyModalProblema.clientName} en{" "}
                   {applyModalProblema.location}
                 </p>
@@ -2471,7 +2630,7 @@ export default function HomePage() {
                   className="space-y-4"
                 >
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                    <label className="block text-xs font-bold uppercase text-[#57534E] mb-1">
                       Tu tarifa propuesta:
                     </label>
                     <input
@@ -2479,11 +2638,11 @@ export default function HomePage() {
                       required
                       value={applyOffer}
                       onChange={(e) => setApplyOffer(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm tabular-nums focus:outline-none focus:border-[#0F4C3A]"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-500 mb-1">
+                    <label className="block text-xs font-bold uppercase text-[#57534E] mb-1">
                       Mensaje para el cliente (¿Cuándo puedes llegar?):
                     </label>
                     <textarea
@@ -2491,13 +2650,13 @@ export default function HomePage() {
                       required
                       value={applyMessage}
                       onChange={(e) => setApplyMessage(e.target.value)}
-                      placeholder="Hola, estoy a 15 minutos de tu ubicación y llevo las herramientas necesarias..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      placeholder="Hola, estoy a 15 minutos de tu colonia y llevo toda la herramienta..."
+                      className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md"
+                    className="w-full py-3.5 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-bold text-sm"
                   >
                     Enviar mi Propuesta de Ayuda
                   </button>
@@ -2512,55 +2671,54 @@ export default function HomePage() {
       {/* MODAL 4: REGISTRARSE COMO SOLUCIONADOR (SUPABASE INSERT)   */}
       {/* ========================================================= */}
       {isRegisterSolucionadorOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
             <button
               onClick={() => setIsRegisterSolucionadorOpen(false)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600"
+              className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
             >
-              <X className="w-5 h-5" />
+              <X strokeWidth={1.75} className="w-5 h-5" />
             </button>
 
             {regSuccess ? (
               <div className="text-center py-6">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle2 className="w-10 h-10" />
+                <div className="w-16 h-16 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle2 strokeWidth={1.75} className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-extrabold text-slate-900 mb-2">
+                <h3 className="font-display text-2xl font-extrabold text-[#18181B] mb-2">
                   ¡Bienvenido al Directorio de Solucionadores!
                 </h3>
                 {regSaveStatus && (
-                  <p className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 mb-4">
+                  <p className="text-xs font-semibold text-[#0F4C3A] bg-[#E6F2EE] border border-[#0F4C3A]/20 rounded-2xl px-4 py-3 mb-4">
                     {regSaveStatus}
                   </p>
                 )}
-                <p className="text-sm text-slate-600 mb-6">
-                  Tu tarjeta profesional ya aparece en primera fila del
-                  Directorio principal para que cualquier persona pueda
-                  encontrarte y contratarte.
+                <p className="text-sm text-[#57534E] mb-6">
+                  Tu credencial profesional ya aparece en primera fila del
+                  Directorio principal.
                 </p>
                 <button
                   onClick={() => {
                     setIsRegisterSolucionadorOpen(false);
                     setSelectedCategory("todos");
                   }}
-                  className="px-6 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm"
+                  className="px-6 py-3.5 rounded-2xl bg-[#0F4C3A] text-white font-bold text-sm"
                 >
                   Ver mi perfil en el Directorio
                 </button>
               </div>
             ) : (
               <>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold mb-2">
-                  <UserPlus className="w-3.5 h-3.5" /> Registro Conectado a
-                  Supabase
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6F2EE] text-[#0F4C3A] text-xs font-bold mb-2">
+                  <UserPlus strokeWidth={1.75} className="w-3.5 h-3.5" />{" "}
+                  Registro de Especialistas • Nuevo León
                 </div>
-                <h3 className="text-2xl font-extrabold text-slate-900">
+                <h3 className="font-display text-2xl font-extrabold text-[#18181B]">
                   Ofrece tus servicios en ManoAmiga
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-500 mt-1 mb-5">
-                  Tus datos se guardarán en la tabla <code>perfiles</code> de
-                  Supabase y aparecerás al instante en el directorio.
+                <p className="text-xs sm:text-sm text-[#57534E] mt-1 mb-5">
+                  Tus datos se guardarán en vivo en el directorio para que
+                  vecinos de tus zonas te contacten directo.
                 </p>
 
                 <form
@@ -2569,7 +2727,7 @@ export default function HomePage() {
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-[#18181B] mb-1">
                         Nombre completo *
                       </label>
                       <input
@@ -2578,11 +2736,11 @@ export default function HomePage() {
                         value={regName}
                         onChange={(e) => setRegName(e.target.value)}
                         placeholder="Ej. Luis Hernández"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-[#18181B] mb-1">
                         Categoría principal *
                       </label>
                       <select
@@ -2592,7 +2750,7 @@ export default function HomePage() {
                             e.target.value as Exclude<CategoryId, "todos">
                           )
                         }
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                       >
                         {CATEGORIES.map((c) => (
                           <option key={c.id} value={c.id}>
@@ -2604,7 +2762,7 @@ export default function HomePage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-[#18181B] mb-1">
                       Tu oficio o especialidad principal *
                     </label>
                     <input
@@ -2612,94 +2770,89 @@ export default function HomePage() {
                       required
                       value={regRole}
                       onChange={(e) => setRegRole(e.target.value)}
-                      placeholder="Ej. Electricista, Plomero y Reparaciones del Hogar"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      placeholder="Ej. Técnico en Minisplits, Plomero y Electricista"
+                      className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                     />
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
-                        Tarifa estimada *
+                      <label className="block text-xs font-bold text-[#18181B] mb-1">
+                        Tarifa base estimada *
                       </label>
                       <input
                         type="text"
                         required
                         value={regRate}
                         onChange={(e) => setRegRate(e.target.value)}
-                        placeholder="Ej. $250 MXN / visita"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="Ej. $350 MXN / revisión"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm tabular-nums focus:outline-none focus:border-[#0F4C3A]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
-                        Teléfono / WhatsApp *
+                      <label className="block text-xs font-bold text-[#18181B] mb-1">
+                        Teléfono / WhatsApp (Lada 81) *
                       </label>
                       <input
                         type="text"
                         required
                         value={regPhone}
                         onChange={(e) => setRegPhone(e.target.value)}
-                        placeholder="Ej. +52 55 1234 5678"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="Ej. +52 81 1234 5678"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm tabular-nums focus:outline-none focus:border-[#0F4C3A]"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
-                        Zona o colonias donde trabajas *
+                      <label className="block text-xs font-bold text-[#18181B] mb-1">
+                        Municipios o colonias donde trabajas *
                       </label>
                       <input
                         type="text"
                         required
                         value={regLocation}
                         onChange={(e) => setRegLocation(e.target.value)}
-                        placeholder="Ej. Zona Centro y Sur"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="Ej. Monterrey, San Nicolás y Cumbres"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">
+                      <label className="block text-xs font-bold text-[#18181B] mb-1">
                         Habilidades (separadas por coma)
                       </label>
                       <input
                         type="text"
                         value={regSkills}
                         onChange={(e) => setRegSkills(e.target.value)}
-                        placeholder="Ej. Plomería, Pintura, Cerraduras"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                        placeholder="Ej. Minisplits, Fugas, Cortos eléctricos"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                    <label className="block text-xs font-bold text-[#18181B] mb-1">
                       Presentación y experiencia
                     </label>
                     <textarea
                       rows={2}
                       value={regBio}
                       onChange={(e) => setRegBio(e.target.value)}
-                      placeholder="Cuéntale a tus futuros clientes por qué pueden confiar en tu trabajo..."
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      placeholder="Cuéntale a tus vecinos cuántos años de experiencia tienes y tu garantía..."
+                      className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm focus:outline-none focus:border-[#0F4C3A]"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={regSubmitting}
-                    className="w-full py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-extrabold text-sm shadow-lg shadow-blue-600/25 flex items-center justify-center gap-2"
+                    className="w-full py-4 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] disabled:opacity-60 text-white font-extrabold text-sm transition-all"
                   >
-                    {regSubmitting && (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    )}
-                    <span>
-                      {regSubmitting
-                        ? "Guardando en Supabase..."
-                        : "Publicar mi Perfil de Solucionador"}
-                    </span>
+                    {regSubmitting
+                      ? "Guardando perfil..."
+                      : "Publicar mi Credencial de Solucionador"}
                   </button>
                 </form>
               </>
@@ -2712,47 +2865,47 @@ export default function HomePage() {
       {/* MODAL 5: ATAJO RÁPIDO "PEDIR AYUDA" (3 PASOS EN MODAL)    */}
       {/* ========================================================= */}
       {isPedirAyudaModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
             <button
               onClick={() => setIsPedirAyudaModalOpen(false)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600"
+              className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
             >
-              <X className="w-5 h-5" />
+              <X strokeWidth={1.75} className="w-5 h-5" />
             </button>
 
             {helpSubmittedSuccess ? (
               <div className="text-center py-6">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle2 className="w-10 h-10" />
+                <div className="w-16 h-16 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle2 strokeWidth={1.75} className="w-10 h-10" />
                 </div>
-                <h3 className="text-2xl font-extrabold text-slate-900 mb-2">
+                <h3 className="font-display text-2xl font-extrabold text-[#18181B] mb-2">
                   ¡Tu problema fue publicado con éxito!
                 </h3>
                 {helpSaveStatus && (
-                  <p className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 mb-4">
+                  <p className="text-xs font-semibold text-[#0F4C3A] bg-[#E6F2EE] border border-[#0F4C3A]/20 rounded-2xl px-4 py-3 mb-4">
                     {helpSaveStatus}
                   </p>
                 )}
-                <p className="text-sm text-slate-600 mb-6">
-                  Ya aparece en primera fila del Tablero de Problemas por
-                  Resolver para que los solucionadores te contacten.
+                <p className="text-sm text-[#57534E] mb-6">
+                  Ya aparece en primera fila del Muro Vecinal para que los
+                  solucionadores te contacten.
                 </p>
                 <button
                   onClick={() => setIsPedirAyudaModalOpen(false)}
-                  className="px-6 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm"
+                  className="px-6 py-3.5 rounded-2xl bg-[#0F4C3A] text-white font-bold text-sm"
                 >
                   Ver en el Tablero
                 </button>
               </div>
             ) : (
               <div>
-                <div className="flex items-center gap-2 mb-4">
+                <div className="flex items-center gap-2 mb-5">
                   {[1, 2, 3].map((s) => (
                     <div
                       key={s}
-                      className={`h-2 flex-1 rounded-full ${
-                        helpStep >= s ? "bg-blue-600" : "bg-slate-200"
+                      className={`h-2 flex-1 rounded-full transition-colors ${
+                        helpStep >= s ? "bg-[#D95D39]" : "bg-[#E7E5E4]"
                       }`}
                     />
                   ))}
@@ -2761,10 +2914,10 @@ export default function HomePage() {
                 <form onSubmit={handleCreateHelpRequest} className="space-y-4">
                   {helpStep === 1 && (
                     <>
-                      <span className="text-xs font-bold uppercase text-blue-600">
+                      <span className="text-xs font-bold uppercase text-[#D95D39]">
                         Paso 1 de 3 • ¿Qué necesitas?
                       </span>
-                      <h3 className="text-xl font-extrabold text-slate-900">
+                      <h3 className="font-display text-xl font-extrabold text-[#18181B]">
                         Describe tu problema o tarea cotidiana
                       </h3>
                       <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -2773,10 +2926,10 @@ export default function HomePage() {
                             key={cat.id}
                             type="button"
                             onClick={() => setHelpCategory(cat.id)}
-                            className={`p-2.5 rounded-xl border text-center flex flex-col items-center gap-1 text-xs font-bold ${
+                            className={`p-3 rounded-2xl border text-center flex flex-col items-center gap-1.5 text-xs font-bold transition-all ${
                               helpCategory === cat.id
-                                ? "border-blue-600 bg-blue-50 text-blue-700"
-                                : "border-slate-200 text-slate-600"
+                                ? "border-[#0F4C3A] bg-[#E6F2EE] text-[#0F4C3A]"
+                                : "border-[#E7E5E4] bg-[#FAFAF9] text-[#57534E]"
                             }`}
                           >
                             {getCategoryIcon(cat.id, "w-4 h-4")}
@@ -2790,23 +2943,23 @@ export default function HomePage() {
                         value={helpTitle}
                         onChange={(e) => setHelpTitle(e.target.value)}
                         placeholder="Título breve (Ej. Instalar soporte de TV en pared)"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm"
                       />
                       <textarea
                         rows={3}
                         value={helpDescription}
                         onChange={(e) => setHelpDescription(e.target.value)}
-                        placeholder="Detalles adicionales para que el solucionador sepa qué llevar..."
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm"
+                        placeholder="Detalles adicionales para que el solucionador sepa qué herramienta llevar..."
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm"
                       />
                       <div className="flex justify-end">
                         <button
                           type="button"
                           onClick={() => setHelpStep(2)}
-                          className="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-sm flex items-center gap-1.5"
+                          className="px-6 py-3 rounded-2xl bg-[#0F4C3A] text-white font-bold text-sm flex items-center gap-1.5"
                         >
                           <span>Siguiente</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
                         </button>
                       </div>
                     </>
@@ -2814,10 +2967,10 @@ export default function HomePage() {
 
                   {helpStep === 2 && (
                     <>
-                      <span className="text-xs font-bold uppercase text-blue-600">
+                      <span className="text-xs font-bold uppercase text-[#D95D39]">
                         Paso 2 de 3 • Ubicación y Urgencia
                       </span>
-                      <h3 className="text-xl font-extrabold text-slate-900">
+                      <h3 className="font-display text-xl font-extrabold text-[#18181B]">
                         ¿Dónde y cuándo necesitas la ayuda?
                       </h3>
                       <input
@@ -2825,10 +2978,10 @@ export default function HomePage() {
                         required
                         value={helpLocation}
                         onChange={(e) => setHelpLocation(e.target.value)}
-                        placeholder="Tu colonia o zona (Ej. Col. Roma Sur)"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm"
+                        placeholder="Tu colonia o municipio (Ej. Col. Contry, Monterrey)"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm"
                       />
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                         {(
                           [
                             "Urgente (Hoy)",
@@ -2840,10 +2993,10 @@ export default function HomePage() {
                             key={u}
                             type="button"
                             onClick={() => setHelpUrgency(u)}
-                            className={`p-3 rounded-xl border text-xs font-bold ${
+                            className={`p-3.5 rounded-2xl border text-xs font-bold ${
                               helpUrgency === u
-                                ? "border-blue-600 bg-blue-50 text-blue-700"
-                                : "border-slate-200 text-slate-700"
+                                ? "border-[#0F4C3A] bg-[#E6F2EE] text-[#0F4C3A]"
+                                : "border-[#E7E5E4] bg-[#FAFAF9] text-[#18181B]"
                             }`}
                           >
                             {u}
@@ -2854,17 +3007,17 @@ export default function HomePage() {
                         <button
                           type="button"
                           onClick={() => setHelpStep(1)}
-                          className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm"
+                          className="px-5 py-2.5 rounded-2xl bg-[#F5F4F0] text-[#18181B] font-semibold text-sm"
                         >
                           Atrás
                         </button>
                         <button
                           type="button"
                           onClick={() => setHelpStep(3)}
-                          className="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-sm flex items-center gap-1.5"
+                          className="px-6 py-3 rounded-2xl bg-[#0F4C3A] text-white font-bold text-sm flex items-center gap-1.5"
                         >
                           <span>Siguiente</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
                         </button>
                       </div>
                     </>
@@ -2872,19 +3025,19 @@ export default function HomePage() {
 
                   {helpStep === 3 && (
                     <>
-                      <span className="text-xs font-bold uppercase text-blue-600">
+                      <span className="text-xs font-bold uppercase text-[#D95D39]">
                         Paso 3 de 3 • Presupuesto y Contacto
                       </span>
-                      <h3 className="text-xl font-extrabold text-slate-900">
-                        Último paso para guardar en Supabase
+                      <h3 className="font-display text-xl font-extrabold text-[#18181B]">
+                        Último paso para publicar en el muro
                       </h3>
                       <input
                         type="text"
                         required
                         value={helpBudget}
                         onChange={(e) => setHelpBudget(e.target.value)}
-                        placeholder="Presupuesto ofrecido (Ej. $350 MXN)"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm"
+                        placeholder="Presupuesto ofrecido (Ej. $400 MXN)"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm tabular-nums"
                       />
                       <input
                         type="text"
@@ -2892,29 +3045,28 @@ export default function HomePage() {
                         value={helpClientName}
                         onChange={(e) => setHelpClientName(e.target.value)}
                         placeholder="Tu nombre (Ej. Carlos R.)"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm"
+                        className="w-full px-4 py-3 rounded-2xl border border-[#E7E5E4] bg-[#FAFAF9] text-sm"
                       />
                       <div className="flex justify-between pt-2">
                         <button
                           type="button"
                           onClick={() => setHelpStep(2)}
-                          className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold text-sm"
+                          className="px-5 py-2.5 rounded-2xl bg-[#F5F4F0] text-[#18181B] font-semibold text-sm"
                         >
                           Atrás
                         </button>
                         <button
                           type="submit"
                           disabled={helpSubmitting}
-                          className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-60 text-white font-extrabold text-sm flex items-center gap-1.5 shadow-md"
+                          className="px-6 py-3.5 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] disabled:opacity-60 text-white font-extrabold text-sm flex items-center gap-1.5 shadow-sm"
                         >
-                          {helpSubmitting ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <CheckCircle2 className="w-4 h-4" />
-                          )}
+                          <CheckCircle2
+                            strokeWidth={1.75}
+                            className="w-4 h-4"
+                          />
                           <span>
                             {helpSubmitting
-                              ? "Guardando..."
+                              ? "Publicando..."
                               : "Publicar Problema"}
                           </span>
                         </button>

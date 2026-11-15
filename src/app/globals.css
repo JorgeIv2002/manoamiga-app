@@ -6,13 +6,40 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
   }
   body {
-    @apply bg-slate-50 text-slate-900 antialiased;
+    background-color: #FAFAF9;
+    color: #18181B;
+    @apply antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: "Plus Jakarta Sans", "Inter", sans-serif;
   }
 }
 
-/* Custom subtle scrollbars for category pills */
+.font-editorial-serif {
+  font-family: "Instrument Serif", Georgia, serif;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Smooth micro-interactions */
+@keyframes floatSubtle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-float-subtle {
+  animation: floatSubtle 4s ease-in-out infinite;
+}
+
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
