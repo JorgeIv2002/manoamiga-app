@@ -6,6 +6,17 @@ export type CategoryId =
   | "mandados"
   | "tecnologia";
 
+export type ServiceModality =
+  | "Presencial"
+  | "En Línea / Remoto"
+  | "Presencial y En Línea";
+
+export type SafePaymentMethod =
+  | "Pago Protegido (Se libera al terminar)"
+  | "Transferencia SPEI Verificada (CEP)"
+  | "Link de Pago Seguro (Mercado Pago / CoDi)"
+  | "Efectivo contra entrega";
+
 export interface CategoryItem {
   id: Exclude<CategoryId, "todos">;
   name: string;
@@ -42,6 +53,12 @@ export interface Solucionador {
   phone: string;
   reviews: ReviewItem[];
   fromSupabase?: boolean;
+  // Nuevos campos de confianza y modalidad
+  modality?: ServiceModality;
+  experienceYears?: string;
+  idVerificationType?: string;
+  guaranteeOffered?: string;
+  acceptedPayments?: SafePaymentMethod[];
 }
 
 export interface ProblemaSolicitud {
@@ -59,6 +76,11 @@ export interface ProblemaSolicitud {
   applicantsCount: number;
   status: "Abierto" | "En revisión" | "En proceso" | "Resuelta";
   fromSupabase?: boolean;
+  // Nuevos campos de confianza y pago seguro
+  modality?: "Presencial" | "En Línea / Remoto";
+  paymentPreference?: SafePaymentMethod;
+  clientPhone?: string;
+  verificationCode?: string;
 }
 
 export const CATEGORIES: CategoryItem[] = [
@@ -92,14 +114,14 @@ export const CATEGORIES: CategoryItem[] = [
   },
   {
     id: "tecnologia",
-    name: "Tecnología",
-    subtitle: "PC, redes Wi-Fi, cámaras, Smart TV y soporte",
+    name: "Tecnología y En Línea",
+    subtitle: "PC remoto, redes Wi-Fi, asesoría y soporte digital",
     badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
     count: 0,
   },
 ];
 
-// Sin perfiles ni solicitudes falsas: todo proviene de registros reales en Supabase
+// Sin perfiles ni solicitudes falsas: todo proviene de registros reales en la base de datos
 export const INITIAL_SOLUCIONADORES: Solucionador[] = [];
 
 export const INITIAL_PROBLEMAS: ProblemaSolicitud[] = [];
