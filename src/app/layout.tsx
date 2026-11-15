@@ -1,7 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 const SITE_URL = "https://manoamiga-app.vercel.app";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#0F4C3A",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -81,7 +89,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es-MX">
+    <html lang="es-MX" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -94,7 +102,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#18181B] selection:bg-[#0F4C3A] selection:text-white">
+      <body
+        suppressHydrationWarning
+        className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#18181B] selection:bg-[#0F4C3A] selection:text-white overflow-x-hidden"
+      >
         {children}
       </body>
     </html>

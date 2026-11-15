@@ -956,24 +956,27 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#18181B] pb-24 md:pb-0">
-      {/* STICKY EDITORIAL NAVBAR */}
-      <header className="sticky top-0 z-40 bg-[#FAFAF9]/90 backdrop-blur-md border-b border-[#E7E5E4]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <div className="min-h-screen flex flex-col bg-[#FAFAF9] text-[#18181B] pb-24 md:pb-0 overflow-x-hidden">
+      {/* STICKY EDITORIAL NAVBAR (ADAPTIVE MOBILE + PC) */}
+      <header className="sticky top-0 z-40 bg-[#FAFAF9]/92 backdrop-blur-md border-b border-[#E7E5E4]">
+        <div className="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2">
           {/* Brand Identity */}
           <a
             href="#"
-            className="flex items-center gap-3 group focus:outline-none"
+            className="flex items-center gap-2.5 sm:gap-3 group focus:outline-none min-w-0"
           >
-            <div className="w-11 h-11 rounded-2xl bg-[#0F4C3A] flex items-center justify-center text-[#FAFAF9] shadow-sm group-hover:bg-[#D95D39] transition-colors duration-300">
-              <HeartHandshake strokeWidth={1.75} className="w-6 h-6" />
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-[#0F4C3A] flex items-center justify-center text-[#FAFAF9] shadow-sm group-hover:bg-[#D95D39] transition-colors duration-300 shrink-0">
+              <HeartHandshake
+                strokeWidth={1.75}
+                className="w-5 h-5 sm:w-6 sm:h-6"
+              />
             </div>
-            <div>
-              <span className="font-display text-xl font-extrabold tracking-tight text-[#18181B]">
+            <div className="min-w-0">
+              <span className="font-display text-lg sm:text-xl font-extrabold tracking-tight text-[#18181B] block leading-tight">
                 Mano<span className="text-[#0F4C3A]">Amiga</span>
               </span>
-              <span className="block text-[11px] font-medium text-[#57534E] -mt-0.5">
-                Servicios Presenciales y En Línea
+              <span className="block text-[10px] sm:text-[11px] font-medium text-[#57534E] truncate">
+                Presencial y En Línea • N.L.
               </span>
             </div>
           </a>
@@ -1016,7 +1019,7 @@ export default function HomePage() {
           </nav>
 
           {/* Desktop Action & Auth Buttons */}
-          <div className="hidden md:flex items-center gap-2.5">
+          <div className="hidden md:flex items-center gap-2 lg:gap-2.5 shrink-0">
             {currentUser ? (
               <div className="flex items-center gap-2 bg-[#F5F4F0] px-3.5 py-2 rounded-2xl border border-[#E7E5E4]">
                 <User strokeWidth={1.75} className="w-4 h-4 text-[#0F4C3A]" />
@@ -1040,7 +1043,7 @@ export default function HomePage() {
                   setAuthMode("login");
                   setIsAuthModalOpen(true);
                 }}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-[#18181B] hover:bg-[#F5F4F0] border border-[#E7E5E4] bg-white transition-all active:scale-[0.98]"
+                className="inline-flex items-center gap-2 px-3.5 lg:px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-[#18181B] hover:bg-[#F5F4F0] border border-[#E7E5E4] bg-white transition-all active:scale-[0.98]"
               >
                 <LogIn strokeWidth={1.75} className="w-4 h-4 text-[#0F4C3A]" />
                 <span>Entrar</span>
@@ -1053,7 +1056,7 @@ export default function HomePage() {
                 setRegSaveStatus(null);
                 setIsRegisterSolucionadorOpen(true);
               }}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-[#0F4C3A] bg-[#E6F2EE] hover:bg-[#0F4C3A] hover:text-white transition-all duration-200 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-3.5 lg:px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold text-[#0F4C3A] bg-[#E6F2EE] hover:bg-[#0F4C3A] hover:text-white transition-all duration-200 active:scale-[0.98]"
             >
               <UserPlus strokeWidth={1.75} className="w-4 h-4" />
               <span>Ser Solucionador</span>
@@ -1064,29 +1067,43 @@ export default function HomePage() {
                 resetHelpWizard();
                 setIsPedirAyudaModalOpen(true);
               }}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold text-white bg-[#D95D39] hover:bg-[#BF4B28] shadow-sm hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98]"
+              className="inline-flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold text-white bg-[#D95D39] hover:bg-[#BF4B28] shadow-sm hover:-translate-y-0.5 transition-all duration-200 active:scale-[0.98]"
             >
               <PlusCircle strokeWidth={1.75} className="w-4 h-4" />
               <span>Pedir Ayuda</span>
             </button>
           </div>
 
-          {/* Mobile Menu Trigger */}
-          <div className="flex items-center gap-2 md:hidden">
+          {/* Mobile Quick Controls & Menu Trigger */}
+          <div className="flex items-center gap-1.5 md:hidden shrink-0">
             <button
               onClick={() => {
                 setGeneratedFolio(null);
                 setIsSafePaymentModalOpen(true);
               }}
-              className="inline-flex items-center gap-1 px-2.5 py-2 rounded-xl text-xs font-bold text-[#0F4C3A] bg-[#E6F2EE]"
+              className="inline-flex items-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-bold text-[#0F4C3A] bg-[#E6F2EE] active:scale-95"
               title="Pago Seguro"
             >
-              <Lock strokeWidth={1.75} className="w-3.5 h-3.5" />
-              Pago Seguro
+              <Lock strokeWidth={1.75} className="w-3.5 h-3.5 shrink-0" />
+              <span>Pago Seguro</span>
             </button>
+            {!currentUser && (
+              <button
+                onClick={() => {
+                  setAuthError(null);
+                  setAuthSuccessMsg(null);
+                  setAuthMode("login");
+                  setIsAuthModalOpen(true);
+                }}
+                className="inline-flex items-center gap-1 px-2.5 py-2 rounded-xl text-[11px] font-bold text-[#18181B] bg-white border border-[#E7E5E4] active:scale-95"
+              >
+                <LogIn strokeWidth={1.75} className="w-3.5 h-3.5 text-[#0F4C3A]" />
+                <span>Entrar</span>
+              </button>
+            )}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2.5 rounded-xl text-[#18181B] hover:bg-[#F5F4F0] border border-[#E7E5E4]"
+              className="p-2 rounded-xl text-[#18181B] hover:bg-[#F5F4F0] border border-[#E7E5E4] bg-white active:scale-95"
               aria-label="Abrir menú"
             >
               {mobileMenuOpen ? (
@@ -1100,15 +1117,15 @@ export default function HomePage() {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#FAFAF9] border-b border-[#E7E5E4] px-4 pt-3 pb-5 space-y-2.5">
+          <div className="md:hidden bg-[#FAFAF9] border-b border-[#E7E5E4] px-4 pt-3 pb-5 space-y-2.5 shadow-lg">
             {currentUser ? (
-              <div className="py-2.5 px-3.5 bg-[#E6F2EE] rounded-2xl text-xs font-semibold text-[#0F4C3A] flex items-center justify-between">
-                <span>Sesión: {currentUser.email}</span>
+              <div className="py-2.5 px-3.5 bg-[#E6F2EE] rounded-2xl text-xs font-semibold text-[#0F4C3A] flex items-center justify-between gap-2">
+                <span className="truncate">Sesión: {currentUser.email}</span>
                 <button
                   onClick={handleSignOut}
-                  className="text-[#D95D39] underline"
+                  className="text-[#D95D39] underline shrink-0 font-bold"
                 >
-                  Cerrar sesión
+                  Salir
                 </button>
               </div>
             ) : (
@@ -1118,44 +1135,58 @@ export default function HomePage() {
                   setAuthMode("login");
                   setIsAuthModalOpen(true);
                 }}
-                className="w-full py-2.5 rounded-2xl text-xs font-bold text-[#18181B] bg-white border border-[#E7E5E4]"
+                className="w-full py-3 rounded-2xl text-xs font-bold text-[#18181B] bg-white border border-[#E7E5E4] flex items-center justify-center gap-2"
               >
-                Iniciar Sesión / Crear Cuenta
+                <LogIn strokeWidth={1.75} className="w-4 h-4 text-[#0F4C3A]" />
+                Iniciar Sesión / Crear Cuenta Gratis
               </button>
             )}
-            <a
-              href="#categorias"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-medium text-[#18181B]"
-            >
-              Categorías de Servicio
-            </a>
-            <a
-              href="#solucionadores"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-medium text-[#18181B]"
-            >
-              Directorio de Solucionadores ({solucionadores.length})
-            </a>
-            <a
-              href="#problemas"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-sm font-medium text-[#18181B]"
-            >
-              Muro de Problemas por Resolver ({problemas.length})
-            </a>
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                setGeneratedFolio(null);
-                setIsSafePaymentModalOpen(true);
-              }}
-              className="w-full py-2.5 rounded-2xl text-xs font-bold text-[#0F4C3A] bg-[#F5F4F0] border border-[#E7E5E4] flex items-center justify-center gap-2"
-            >
-              <Lock strokeWidth={1.75} className="w-4 h-4" />
-              Centro de Pago Seguro y Verificación SPEI
-            </button>
-            <div className="pt-2 border-t border-[#E7E5E4]">
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <a
+                href="#categorias"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 rounded-2xl bg-white border border-[#E7E5E4] text-xs font-bold text-[#18181B] text-center"
+              >
+                Categorías
+              </a>
+              <a
+                href="#solucionadores"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 rounded-2xl bg-white border border-[#E7E5E4] text-xs font-bold text-[#18181B] text-center tabular-nums"
+              >
+                Solucionadores ({solucionadores.length})
+              </a>
+              <a
+                href="#problemas"
+                onClick={() => setMobileMenuOpen(false)}
+                className="p-3 rounded-2xl bg-white border border-[#E7E5E4] text-xs font-bold text-[#18181B] text-center tabular-nums"
+              >
+                Muro Vecinal ({problemas.length})
+              </a>
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setGeneratedFolio(null);
+                  setIsSafePaymentModalOpen(true);
+                }}
+                className="p-3 rounded-2xl bg-[#E6F2EE] text-xs font-bold text-[#0F4C3A] text-center flex items-center justify-center gap-1"
+              >
+                <Lock strokeWidth={1.75} className="w-3.5 h-3.5" />
+                Pago Seguro
+              </button>
+            </div>
+            <div className="pt-2 border-t border-[#E7E5E4] grid grid-cols-1 gap-2">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  resetHelpWizard();
+                  setIsPedirAyudaModalOpen(true);
+                }}
+                className="w-full py-3 rounded-2xl text-xs font-bold text-white bg-[#D95D39] flex items-center justify-center gap-2 shadow-sm"
+              >
+                <PlusCircle strokeWidth={1.75} className="w-4 h-4" />
+                Pedir Ayuda Ahora
+              </button>
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
@@ -1163,7 +1194,7 @@ export default function HomePage() {
                   setRegSaveStatus(null);
                   setIsRegisterSolucionadorOpen(true);
                 }}
-                className="w-full py-3 rounded-2xl text-sm font-bold text-[#0F4C3A] bg-[#E6F2EE] flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl text-xs font-bold text-[#0F4C3A] bg-[#E6F2EE] flex items-center justify-center gap-2"
               >
                 <UserPlus strokeWidth={1.75} className="w-4 h-4" />
                 Registrarme como Solucionador
@@ -1174,25 +1205,28 @@ export default function HomePage() {
       </header>
 
       {/* ===================================================================== */}
-      {/* ASYMMETRIC 12-COLUMN BENTO HERO SECTION (WARM EDITORIAL CANVAS)       */}
+      {/* ASYMMETRIC 12-COLUMN BENTO HERO SECTION (MOBILE + PC ADAPTIVE)        */}
       {/* ===================================================================== */}
-      <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 md:pt-14 md:pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+      <section className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 lg:px-8 pt-5 pb-8 sm:pt-10 sm:pb-12 md:pt-14 md:pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-stretch">
           {/* LEFT 7 COLUMNS: Editorial Headline + Tactile Search Bar */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-[#E7E5E4] p-6 sm:p-10 shadow-bento flex flex-col justify-between">
+          <div className="lg:col-span-7 bg-white rounded-3xl border border-[#E7E5E4] p-5 sm:p-8 lg:p-10 shadow-bento flex flex-col justify-between">
             <div>
-              <div className="flex flex-wrap items-center gap-2 mb-6">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E6F2EE] border border-[#0F4C3A]/15 text-[#0F4C3A] text-xs font-semibold">
-                  <MapPin strokeWidth={1.75} className="w-3.5 h-3.5" />
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#E6F2EE] border border-[#0F4C3A]/15 text-[#0F4C3A] text-[11px] sm:text-xs font-semibold">
+                  <MapPin strokeWidth={1.75} className="w-3.5 h-3.5 shrink-0" />
                   <span>Monterrey y Área Metropolitana</span>
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#F5F4F0] border border-[#E7E5E4] text-[#18181B] text-xs font-semibold">
-                  <Globe strokeWidth={1.75} className="w-3.5 h-3.5 text-[#D95D39]" />
-                  <span>Servicios a Domicilio y 100% En Línea</span>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#F5F4F0] border border-[#E7E5E4] text-[#18181B] text-[11px] sm:text-xs font-semibold">
+                  <Globe
+                    strokeWidth={1.75}
+                    className="w-3.5 h-3.5 text-[#D95D39] shrink-0"
+                  />
+                  <span>A Domicilio y 100% En Línea</span>
                 </div>
               </div>
 
-              <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-[#18181B] tracking-tight leading-[1.08] mb-5">
+              <h1 className="font-display text-[1.75rem] sm:text-4xl lg:text-5xl font-extrabold text-[#18181B] tracking-tight leading-[1.12] sm:leading-[1.08] mb-4 sm:mb-5">
                 ¿Un imprevisto en casa o un pendiente digital? Resuélvelo hoy
                 con{" "}
                 <span className="font-editorial-serif italic font-normal text-[#0F4C3A] text-[1.12em]">
@@ -1201,7 +1235,7 @@ export default function HomePage() {
                 .
               </h1>
 
-              <p className="text-base sm:text-lg text-[#57534E] leading-relaxed mb-8 max-w-2xl">
+              <p className="text-sm sm:text-base lg:text-lg text-[#57534E] leading-relaxed mb-6 sm:mb-8 max-w-2xl">
                 Desde plomería, minisplits, fletes o limpieza a domicilio, hasta
                 soporte técnico remoto y asesorías en línea. Conecta con
                 especialistas verificados con{" "}
@@ -1214,7 +1248,7 @@ export default function HomePage() {
               {/* TACTILE SEARCH BOX */}
               <div className="bg-[#FAFAF9] p-2 rounded-2xl border border-[#E7E5E4] focus-within:border-[#0F4C3A] focus-within:ring-4 focus-within:ring-[#0F4C3A]/10 transition-all">
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                  <div className="flex-1 flex items-center gap-3 px-3.5 py-2.5">
+                  <div className="flex-1 flex items-center gap-2.5 sm:gap-3 px-3 py-2 sm:px-3.5 sm:py-2.5">
                     <Search
                       strokeWidth={1.75}
                       className="w-5 h-5 text-[#0F4C3A] shrink-0"
@@ -1223,13 +1257,13 @@ export default function HomePage() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="¿Qué necesitas hoy? (Ej. minisplit, plomero, soporte PC remoto, flete...)"
+                      placeholder="¿Qué necesitas hoy? (Ej. minisplit, plomero, soporte PC...)"
                       className="w-full text-sm sm:text-base bg-transparent text-[#18181B] placeholder-[#57534E]/70 focus:outline-none"
                     />
                     {searchQuery && (
                       <button
                         onClick={() => setSearchQuery("")}
-                        className="text-[#57534E] hover:text-[#18181B]"
+                        className="text-[#57534E] hover:text-[#18181B] p-1"
                         title="Limpiar búsqueda"
                       >
                         <X strokeWidth={1.75} className="w-4 h-4" />
@@ -1238,7 +1272,7 @@ export default function HomePage() {
                   </div>
                   <a
                     href="#solucionadores"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm sm:text-base transition-all shadow-sm hover:-translate-y-0.5 active:scale-[0.98] shrink-0"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm sm:text-base transition-all shadow-sm hover:-translate-y-0.5 active:scale-[0.98] shrink-0"
                   >
                     <span>Buscar Especialista</span>
                     <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
@@ -1248,8 +1282,8 @@ export default function HomePage() {
             </div>
 
             {/* Quick Popular Tags */}
-            <div className="mt-6 pt-5 border-t border-[#E7E5E4] flex flex-wrap items-center gap-2 text-xs">
-              <span className="text-[#57534E] font-medium mr-1">
+            <div className="mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-[#E7E5E4] flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs">
+              <span className="text-[#57534E] font-medium mr-1 w-full sm:w-auto mb-0.5 sm:mb-0">
                 Búsquedas rápidas:
               </span>
               {[
@@ -1267,7 +1301,7 @@ export default function HomePage() {
                     setOnlyOnlineFilter(tag.online);
                     setSelectedCategory("todos");
                   }}
-                  className="px-3 py-1.5 rounded-xl bg-[#F5F4F0] hover:bg-[#E6F2EE] text-[#18181B] hover:text-[#0F4C3A] border border-[#E7E5E4] font-medium transition-all active:scale-95"
+                  className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#F5F4F0] hover:bg-[#E6F2EE] text-[#18181B] hover:text-[#0F4C3A] border border-[#E7E5E4] font-medium transition-all active:scale-95"
                 >
                   {tag.label}
                 </button>
@@ -1278,9 +1312,9 @@ export default function HomePage() {
           {/* RIGHT 5 COLUMNS: Asymmetric Bento Trust & Safe Payment Mosaic */}
           <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             {/* Top Wide Bento Card (Deep Forest #0F4C3A - Safe Online & In-Person Payment) */}
-            <div className="sm:col-span-2 bg-[#0F4C3A] text-[#FAFAF9] rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-bento relative overflow-hidden">
-              <div className="flex items-center justify-between gap-2 mb-5">
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#E6F2EE] text-xs font-semibold">
+            <div className="sm:col-span-2 bg-[#0F4C3A] text-[#FAFAF9] rounded-3xl p-5 sm:p-8 flex flex-col justify-between shadow-bento relative overflow-hidden">
+              <div className="flex items-center justify-between gap-2 mb-4 sm:mb-5">
+                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-[#E6F2EE] text-[11px] sm:text-xs font-semibold">
                   <Lock strokeWidth={1.75} className="w-3.5 h-3.5 text-[#D95D39]" />
                   Pago Protegido y Verificable
                 </span>
@@ -1288,7 +1322,7 @@ export default function HomePage() {
               </div>
 
               <div>
-                <h2 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
+                <h2 className="font-display text-xl sm:text-3xl font-extrabold tracking-tight mb-2">
                   ¿Servicio en línea o a domicilio?{" "}
                   <span className="font-editorial-serif italic font-normal text-[#E6F2EE] text-[1.12em]">
                     Tu dinero está seguro
@@ -1301,14 +1335,14 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-white/15 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="mt-5 sm:mt-6 pt-4 border-t border-white/15 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
                 <button
                   onClick={() => {
                     setGeneratedFolio(null);
                     setSpeiVerifiedResult(null);
                     setIsSafePaymentModalOpen(true);
                   }}
-                  className="px-4 py-2.5 rounded-xl bg-white text-[#0F4C3A] font-bold hover:bg-[#E6F2EE] transition-colors inline-flex items-center gap-1.5"
+                  className="w-full sm:w-auto justify-center px-4 py-3 sm:py-2.5 rounded-xl bg-white text-[#0F4C3A] font-bold hover:bg-[#E6F2EE] transition-colors inline-flex items-center gap-1.5"
                 >
                   <CreditCard strokeWidth={1.75} className="w-4 h-4" />
                   Abrir Centro de Pago Seguro
@@ -1318,7 +1352,7 @@ export default function HomePage() {
                     resetHelpWizard();
                     setIsPedirAyudaModalOpen(true);
                   }}
-                  className="font-bold text-[#E6F2EE] underline decoration-[#D95D39] underline-offset-4 hover:text-white transition-colors inline-flex items-center gap-1"
+                  className="w-full sm:w-auto justify-center py-1.5 sm:py-0 font-bold text-[#E6F2EE] underline decoration-[#D95D39] underline-offset-4 hover:text-white transition-colors inline-flex items-center gap-1"
                 >
                   Pedir ayuda ahora
                   <ArrowRight strokeWidth={1.75} className="w-3.5 h-3.5" />
@@ -1327,12 +1361,12 @@ export default function HomePage() {
             </div>
 
             {/* Bottom Left Bento Card (Identity & Guarantee Verification) */}
-            <div className="bg-[#F5F4F0] rounded-3xl border border-[#E7E5E4] p-6 flex flex-col justify-between shadow-bento">
-              <div className="w-11 h-11 rounded-2xl bg-white border border-[#E7E5E4] text-[#0F4C3A] flex items-center justify-center mb-4">
+            <div className="bg-[#F5F4F0] rounded-3xl border border-[#E7E5E4] p-5 sm:p-6 flex flex-col justify-between shadow-bento">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white border border-[#E7E5E4] text-[#0F4C3A] flex items-center justify-center mb-3 sm:mb-4">
                 <FileCheck2 strokeWidth={1.75} className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-display text-lg font-extrabold text-[#18181B]">
+                <div className="font-display text-base sm:text-lg font-extrabold text-[#18181B]">
                   Identidad y Garantía
                 </div>
                 <p className="text-xs text-[#57534E] mt-1 leading-relaxed">
@@ -1343,12 +1377,12 @@ export default function HomePage() {
             </div>
 
             {/* Bottom Right Bento Card (Online & Local Modality) */}
-            <div className="bg-white rounded-3xl border border-[#E7E5E4] p-6 flex flex-col justify-between shadow-bento">
-              <div className="w-11 h-11 rounded-2xl bg-[#FFF1EC] text-[#D95D39] flex items-center justify-center mb-4">
+            <div className="bg-white rounded-3xl border border-[#E7E5E4] p-5 sm:p-6 flex flex-col justify-between shadow-bento">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#FFF1EC] text-[#D95D39] flex items-center justify-center mb-3 sm:mb-4">
                 <Award strokeWidth={1.75} className="w-5 h-5" />
               </div>
               <div>
-                <div className="font-display text-lg font-extrabold text-[#18181B]">
+                <div className="font-display text-base sm:text-lg font-extrabold text-[#18181B]">
                   Verificación SPEI / CEP
                 </div>
                 <p className="text-xs text-[#57534E] mt-1 leading-relaxed">
@@ -1362,19 +1396,19 @@ export default function HomePage() {
       </section>
 
       {/* ===================================================================== */}
-      {/* BENTO MOSAIC OF CATEGORIES                                            */}
+      {/* BENTO MOSAIC OF CATEGORIES (2-COL MOBILE / 6-COL DESKTOP)             */}
       {/* ===================================================================== */}
       <section
         id="categorias"
-        className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6"
+        className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6"
       >
-        <div className="bg-white rounded-3xl border border-[#E7E5E4] p-6 sm:p-8 shadow-bento">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
+        <div className="bg-white rounded-3xl border border-[#E7E5E4] p-5 sm:p-8 shadow-bento">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-5 sm:mb-6">
             <div>
               <span className="text-xs font-bold uppercase tracking-wider text-[#0F4C3A]">
                 Especialidades Presenciales y Remotas
               </span>
-              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight mt-0.5">
+              <h2 className="font-display text-xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight mt-0.5">
                 ¿En qué área necesitas{" "}
                 <span className="font-editorial-serif italic font-normal text-[#0F4C3A] text-[1.1em]">
                   apoyo hoy
@@ -1396,18 +1430,18 @@ export default function HomePage() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3.5">
             <button
               onClick={() => setSelectedCategory("todos")}
-              className={`flex flex-col justify-between p-5 rounded-2xl border text-left transition-all duration-200 active:scale-[0.98] ${
+              className={`flex flex-col justify-between p-4 sm:p-5 rounded-2xl border text-left transition-all duration-200 active:scale-[0.98] ${
                 selectedCategory === "todos"
                   ? "bg-[#0F4C3A] text-white border-[#0F4C3A] shadow-md -translate-y-0.5"
                   : "bg-[#F5F4F0] hover:bg-white text-[#18181B] border-[#E7E5E4] hover:border-[#0F4C3A]/40"
               }`}
             >
-              <div className="w-full flex items-center justify-between mb-4">
+              <div className="w-full flex items-center justify-between mb-3 sm:mb-4">
                 <div
-                  className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+                  className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center ${
                     selectedCategory === "todos"
                       ? "bg-white/15 text-white"
                       : "bg-white text-[#0F4C3A] border border-[#E7E5E4]"
@@ -1416,7 +1450,7 @@ export default function HomePage() {
                   <HeartHandshake strokeWidth={1.75} className="w-5 h-5" />
                 </div>
                 <span
-                  className={`text-xs font-bold tabular-nums px-2.5 py-0.5 rounded-full ${
+                  className={`text-xs font-bold tabular-nums px-2 sm:px-2.5 py-0.5 rounded-full ${
                     selectedCategory === "todos"
                       ? "bg-white/15 text-white"
                       : "bg-white text-[#57534E] border border-[#E7E5E4]"
@@ -1426,11 +1460,11 @@ export default function HomePage() {
                 </span>
               </div>
               <div>
-                <span className="font-display font-bold text-sm block">
+                <span className="font-display font-bold text-xs sm:text-sm block">
                   Todas
                 </span>
                 <span
-                  className={`text-xs mt-0.5 line-clamp-1 ${
+                  className={`text-[11px] sm:text-xs mt-0.5 line-clamp-1 ${
                     selectedCategory === "todos"
                       ? "text-[#E6F2EE]"
                       : "text-[#57534E]"
@@ -1452,15 +1486,15 @@ export default function HomePage() {
                   onClick={() =>
                     setSelectedCategory(isSelected ? "todos" : cat.id)
                   }
-                  className={`flex flex-col justify-between p-5 rounded-2xl border text-left transition-all duration-200 active:scale-[0.98] ${
+                  className={`flex flex-col justify-between p-4 sm:p-5 rounded-2xl border text-left transition-all duration-200 active:scale-[0.98] ${
                     isSelected
                       ? "bg-[#0F4C3A] text-white border-[#0F4C3A] shadow-md -translate-y-0.5"
                       : "bg-[#FAFAF9] hover:bg-white text-[#18181B] border-[#E7E5E4] hover:border-[#0F4C3A]/40"
                   }`}
                 >
-                  <div className="w-full flex items-center justify-between mb-4">
+                  <div className="w-full flex items-center justify-between mb-3 sm:mb-4">
                     <div
-                      className={`w-11 h-11 rounded-xl flex items-center justify-center ${
+                      className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center ${
                         isSelected
                           ? "bg-white/15 text-white"
                           : "bg-[#E6F2EE] text-[#0F4C3A]"
@@ -1469,7 +1503,7 @@ export default function HomePage() {
                       {getCategoryIcon(cat.id, "w-5 h-5")}
                     </div>
                     <span
-                      className={`text-xs font-bold tabular-nums px-2.5 py-0.5 rounded-full ${
+                      className={`text-xs font-bold tabular-nums px-2 sm:px-2.5 py-0.5 rounded-full ${
                         isSelected
                           ? "bg-white/15 text-white"
                           : "bg-[#F5F4F0] text-[#57534E] border border-[#E7E5E4]"
@@ -1479,11 +1513,11 @@ export default function HomePage() {
                     </span>
                   </div>
                   <div>
-                    <span className="font-display font-bold text-sm block">
+                    <span className="font-display font-bold text-xs sm:text-sm block">
                       {cat.name}
                     </span>
                     <span
-                      className={`text-xs mt-0.5 line-clamp-1 ${
+                      className={`text-[11px] sm:text-xs mt-0.5 line-clamp-1 ${
                         isSelected ? "text-[#E6F2EE]" : "text-[#57534E]"
                       }`}
                     >
@@ -1502,9 +1536,9 @@ export default function HomePage() {
       {/* ===================================================================== */}
       <section
         id="solucionadores"
-        className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-12 pb-10"
+        className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 lg:px-8 pt-8 pb-8 sm:pt-12 sm:pb-10"
       >
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 sm:mb-8">
           <div>
             <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0F4C3A] mb-1.5">
               <ShieldCheck strokeWidth={1.75} className="w-4 h-4" />
@@ -1516,33 +1550,36 @@ export default function HomePage() {
                 en tu colonia o en línea
               </span>
             </h2>
-            <p className="text-sm sm:text-base text-[#57534E] mt-1">
+            <p className="text-xs sm:text-base text-[#57534E] mt-1">
               Cada perfil muestra su identificación verificada, garantía y
               métodos de pago seguro aceptados.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
-            <label className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#18181B] bg-white px-3.5 py-2.5 rounded-2xl border border-[#E7E5E4] cursor-pointer select-none shadow-sm hover:border-[#0F4C3A]/40 transition-colors">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5">
+            <label className="inline-flex items-center justify-center sm:justify-start gap-2 text-xs sm:text-sm font-medium text-[#18181B] bg-white px-3 py-2.5 sm:px-3.5 rounded-2xl border border-[#E7E5E4] cursor-pointer select-none shadow-sm hover:border-[#0F4C3A]/40 transition-colors">
               <input
                 type="checkbox"
                 checked={onlyAvailableToday}
                 onChange={(e) => setOnlyAvailableToday(e.target.checked)}
                 className="rounded text-[#0F4C3A] focus:ring-[#0F4C3A] w-4 h-4"
               />
-              <span className="w-2 h-2 rounded-full bg-[#15803D]" />
-              <span>Disponibles hoy</span>
+              <span className="w-2 h-2 rounded-full bg-[#15803D] shrink-0" />
+              <span className="truncate">Disponibles hoy</span>
             </label>
 
-            <label className="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-[#18181B] bg-white px-3.5 py-2.5 rounded-2xl border border-[#E7E5E4] cursor-pointer select-none shadow-sm hover:border-[#0F4C3A]/40 transition-colors">
+            <label className="inline-flex items-center justify-center sm:justify-start gap-2 text-xs sm:text-sm font-medium text-[#18181B] bg-white px-3 py-2.5 sm:px-3.5 rounded-2xl border border-[#E7E5E4] cursor-pointer select-none shadow-sm hover:border-[#0F4C3A]/40 transition-colors">
               <input
                 type="checkbox"
                 checked={onlyOnlineFilter}
                 onChange={(e) => setOnlyOnlineFilter(e.target.checked)}
                 className="rounded text-[#0F4C3A] focus:ring-[#0F4C3A] w-4 h-4"
               />
-              <Globe strokeWidth={1.75} className="w-3.5 h-3.5 text-[#D95D39]" />
-              <span>Atención En Línea</span>
+              <Globe
+                strokeWidth={1.75}
+                className="w-3.5 h-3.5 text-[#D95D39] shrink-0"
+              />
+              <span className="truncate">En Línea</span>
             </label>
 
             <button
@@ -1551,7 +1588,7 @@ export default function HomePage() {
                 setRegSaveStatus(null);
                 setIsRegisterSolucionadorOpen(true);
               }}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#0F4C3A] bg-[#E6F2EE] hover:bg-[#0F4C3A] hover:text-white px-4 py-2.5 rounded-2xl border border-[#0F4C3A]/15 transition-all"
+              className="col-span-2 sm:col-span-1 inline-flex items-center justify-center gap-2 text-xs sm:text-sm font-bold text-[#0F4C3A] bg-[#E6F2EE] hover:bg-[#0F4C3A] hover:text-white px-4 py-2.5 rounded-2xl border border-[#0F4C3A]/15 transition-all"
             >
               <UserPlus strokeWidth={1.75} className="w-4 h-4" />
               <span>Crear mi Credencial</span>
@@ -1560,11 +1597,11 @@ export default function HomePage() {
         </div>
 
         {isLoadingDb && solucionadores.length === 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
             {[1, 2, 3].map((n) => (
               <div
                 key={n}
-                className="bg-white rounded-3xl border border-[#E7E5E4] p-7 space-y-4"
+                className="bg-white rounded-3xl border border-[#E7E5E4] p-6 sm:p-7 space-y-4"
               >
                 <div className="h-6 w-32 bg-[#E7E5E4]/60 rounded-full animate-pulse" />
                 <div className="flex gap-4">
@@ -1579,28 +1616,28 @@ export default function HomePage() {
             ))}
           </div>
         ) : filteredSolucionadores.length === 0 ? (
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] p-12 text-center shadow-bento max-w-2xl mx-auto">
+          <div className="bg-white rounded-3xl border border-[#E7E5E4] p-7 sm:p-12 text-center shadow-bento max-w-2xl mx-auto">
             <div className="w-14 h-14 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] flex items-center justify-center mx-auto mb-4">
               <UserPlus strokeWidth={1.75} className="w-7 h-7" />
             </div>
-            <h3 className="font-display text-xl font-extrabold text-[#18181B]">
+            <h3 className="font-display text-lg sm:text-xl font-extrabold text-[#18181B]">
               {solucionadores.length === 0
                 ? "Sé de los primeros Solucionadores Verificados en Nuevo León"
                 : "No encontramos solucionadores con ese filtro"}
             </h3>
-            <p className="text-sm text-[#57534E] mt-2 mb-6 max-w-md mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#57534E] mt-2 mb-6 max-w-md mx-auto leading-relaxed">
               {solucionadores.length === 0
                 ? "Nuestro directorio muestra únicamente perfiles reales con identificación, garantía y métodos de pago verificables. Regístrate gratis hoy y aparece en primera fila."
                 : "Prueba mostrando todas las categorías o publica tu necesidad para que te contacten directamente."}
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3">
               <button
                 onClick={() => {
                   setRegSuccess(false);
                   setRegSaveStatus(null);
                   setIsRegisterSolucionadorOpen(true);
                 }}
-                className="px-6 py-3 rounded-2xl bg-[#0F4C3A] text-white text-sm font-bold hover:bg-[#0B3B2D] inline-flex items-center gap-2"
+                className="px-6 py-3.5 rounded-2xl bg-[#0F4C3A] text-white text-sm font-bold hover:bg-[#0B3B2D] inline-flex items-center justify-center gap-2"
               >
                 <UserPlus strokeWidth={1.75} className="w-4 h-4" />
                 Registrarme como Solucionador
@@ -1621,7 +1658,7 @@ export default function HomePage() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-7">
             {filteredSolucionadores.map((sol) => {
               const isFavorite =
                 sol.rating >= 4.9 && sol.completedJobs >= 90;
@@ -1631,7 +1668,7 @@ export default function HomePage() {
                   className="bg-white rounded-3xl border border-[#E7E5E4] shadow-bento hover:shadow-bento-hover hover:-translate-y-1 hover:border-[#0F4C3A]/40 transition-all duration-300 flex flex-col justify-between overflow-hidden group relative"
                 >
                   {isFavorite && (
-                    <div className="bg-[#F5F4F0] border-b border-[#E7E5E4] px-6 py-2 flex items-center justify-between text-[11px] font-bold text-[#0F4C3A]">
+                    <div className="bg-[#F5F4F0] border-b border-[#E7E5E4] px-5 sm:px-6 py-2 flex items-center justify-between text-[11px] font-bold text-[#0F4C3A]">
                       <span>★ Favorito en tu zona</span>
                       <span className="text-[#57534E] font-medium tabular-nums">
                         +98% clientes satisfechos
@@ -1639,11 +1676,11 @@ export default function HomePage() {
                     </div>
                   )}
 
-                  <div className="p-6 sm:p-7">
+                  <div className="p-5 sm:p-7">
                     {/* Top Status Row */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-5">
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#F5F4F0] text-[#18181B] border border-[#E7E5E4]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-[#F5F4F0] text-[#18181B] border border-[#E7E5E4]">
                           {getCategoryIcon(
                             sol.category,
                             "w-3.5 h-3.5 text-[#0F4C3A]"
@@ -1659,24 +1696,24 @@ export default function HomePage() {
                       </div>
 
                       {sol.availableToday ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#E6F2EE] text-[#0F4C3A]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-[#E6F2EE] text-[#0F4C3A]">
                           <span className="w-2 h-2 rounded-full bg-[#15803D] animate-pulse" />
                           Disponible hoy
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#F5F4F0] text-[#57534E]">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium bg-[#F5F4F0] text-[#57534E]">
                           Agenda previa
                         </span>
                       )}
                     </div>
 
                     {/* Identity Block */}
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-3.5 sm:gap-4">
                       <div className="relative shrink-0">
                         <img
                           src={sol.avatarUrl}
                           alt={sol.name}
-                          className="w-16 h-16 rounded-2xl object-cover border border-[#E7E5E4] shadow-sm"
+                          className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border border-[#E7E5E4] shadow-sm"
                         />
                         {sol.verified && (
                           <div
@@ -1692,15 +1729,15 @@ export default function HomePage() {
                       </div>
 
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-display text-lg font-extrabold text-[#18181B] truncate group-hover:text-[#0F4C3A] transition-colors">
+                        <h3 className="font-display text-base sm:text-lg font-extrabold text-[#18181B] truncate group-hover:text-[#0F4C3A] transition-colors">
                           {sol.name}
                         </h3>
                         <p className="text-xs sm:text-sm font-medium text-[#57534E] line-clamp-1">
                           {sol.role}
                         </p>
 
-                        <div className="flex flex-wrap items-center gap-2 mt-2.5 text-xs tabular-nums">
-                          <span className="inline-flex items-center gap-1 font-bold text-[#18181B] bg-[#FEF3C7] border border-amber-300/60 px-2.5 py-0.5 rounded-lg">
+                        <div className="flex flex-wrap items-center gap-2 mt-2 text-xs tabular-nums">
+                          <span className="inline-flex items-center gap-1 font-bold text-[#18181B] bg-[#FEF3C7] border border-amber-300/60 px-2 py-0.5 rounded-lg">
                             <Star
                               strokeWidth={1.75}
                               className="w-3.5 h-3.5 fill-[#D97706] text-[#D97706]"
@@ -1710,7 +1747,7 @@ export default function HomePage() {
                               ({sol.reviewsCount})
                             </span>
                           </span>
-                          <span className="text-[#57534E] font-medium">
+                          <span className="text-[#57534E] font-medium text-[11px] sm:text-xs">
                             • {sol.experienceYears || "Experiencia comprobada"}
                           </span>
                         </div>
@@ -1718,33 +1755,33 @@ export default function HomePage() {
                     </div>
 
                     {/* Bio */}
-                    <p className="mt-4 text-xs sm:text-sm text-[#57534E] line-clamp-2 leading-relaxed">
+                    <p className="mt-3.5 sm:mt-4 text-xs sm:text-sm text-[#57534E] line-clamp-2 leading-relaxed">
                       {sol.bio}
                     </p>
 
                     {/* Trust Verification Box */}
-                    <div className="mt-4 p-3 rounded-2xl bg-[#F5F4F0] border border-[#E7E5E4] space-y-1.5 text-[11px]">
-                      <div className="flex items-center justify-between text-[#18181B]">
-                        <span className="font-semibold flex items-center gap-1.5">
+                    <div className="mt-3.5 sm:mt-4 p-3 rounded-2xl bg-[#F5F4F0] border border-[#E7E5E4] space-y-1.5 text-[11px]">
+                      <div className="flex items-center justify-between gap-2 text-[#18181B]">
+                        <span className="font-semibold flex items-center gap-1.5 shrink-0">
                           <FileCheck2
                             strokeWidth={1.75}
                             className="w-3.5 h-3.5 text-[#0F4C3A]"
                           />
                           Identificación:
                         </span>
-                        <span className="font-bold text-[#0F4C3A]">
+                        <span className="font-bold text-[#0F4C3A] truncate">
                           {sol.idVerificationType || "INE / IFE Vigente"}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between text-[#18181B]">
-                        <span className="font-semibold flex items-center gap-1.5">
+                      <div className="flex items-center justify-between gap-2 text-[#18181B]">
+                        <span className="font-semibold flex items-center gap-1.5 shrink-0">
                           <Lock
                             strokeWidth={1.75}
                             className="w-3.5 h-3.5 text-[#D95D39]"
                           />
                           Garantía:
                         </span>
-                        <span className="text-[#57534E] font-medium truncate max-w-[170px]">
+                        <span className="text-[#57534E] font-medium truncate">
                           {sol.guaranteeOffered || "Pago al quedar satisfecho"}
                         </span>
                       </div>
@@ -1790,7 +1827,7 @@ export default function HomePage() {
                   </div>
 
                   {/* Separated Card Footer (#FAFAF9) */}
-                  <div className="px-6 py-4 bg-[#FAFAF9] border-t border-[#E7E5E4] flex items-center justify-between gap-3">
+                  <div className="px-5 sm:px-6 py-4 bg-[#FAFAF9] border-t border-[#E7E5E4] flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5">
                     <div>
                       <span className="block text-[10px] uppercase tracking-wider font-bold text-[#57534E]">
                         Tarifa base
@@ -1800,10 +1837,10 @@ export default function HomePage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-end">
                       <button
                         onClick={() => setSelectedSolucionador(sol)}
-                        className="px-3 py-2.5 rounded-xl text-xs font-bold text-[#18181B] hover:bg-[#F5F4F0] bg-white border border-[#E7E5E4] transition-all active:scale-95"
+                        className="flex-1 sm:flex-initial px-3 py-2.5 rounded-xl text-xs font-bold text-[#18181B] hover:bg-[#F5F4F0] bg-white border border-[#E7E5E4] transition-all active:scale-95 text-center"
                       >
                         Credencial
                       </button>
@@ -1814,10 +1851,10 @@ export default function HomePage() {
                           setGeneratedFolio(null);
                           setIsSafePaymentModalOpen(true);
                         }}
-                        className="px-3 py-2.5 rounded-xl text-xs font-bold text-[#0F4C3A] bg-[#E6F2EE] hover:bg-[#0F4C3A] hover:text-white transition-all active:scale-95"
+                        className="px-3 py-2.5 rounded-xl text-xs font-bold text-[#0F4C3A] bg-[#E6F2EE] hover:bg-[#0F4C3A] hover:text-white transition-all active:scale-95 shrink-0"
                         title="Pago Seguro"
                       >
-                        <Lock strokeWidth={1.75} className="w-3.5 h-3.5" />
+                        <Lock strokeWidth={1.75} className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => {
@@ -1825,13 +1862,13 @@ export default function HomePage() {
                           setContactSent(false);
                           setContactModalSolucionador(sol);
                         }}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-white bg-[#D95D39] hover:bg-[#BF4B28] shadow-sm hover:-translate-y-0.5 transition-all active:scale-95"
+                        className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2.5 rounded-xl text-xs font-bold text-white bg-[#D95D39] hover:bg-[#BF4B28] shadow-sm hover:-translate-y-0.5 transition-all active:scale-95"
                       >
                         <MessageCircle
                           strokeWidth={1.75}
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 shrink-0"
                         />
-                        Contactar
+                        <span>Contactar</span>
                       </button>
                     </div>
                   </div>
@@ -1847,13 +1884,13 @@ export default function HomePage() {
       {/* ===================================================================== */}
       <section
         id="problemas"
-        className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10"
+        className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 lg:px-8 py-6 sm:py-10"
       >
-        <div className="bg-[#0F4C3A] rounded-[32px] p-6 sm:p-10 lg:p-12 text-[#FAFAF9] shadow-bento">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+        <div className="bg-[#0F4C3A] rounded-3xl sm:rounded-[32px] p-5 sm:p-10 lg:p-12 text-[#FAFAF9] shadow-bento">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 sm:gap-6 mb-7 sm:mb-10">
             <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 text-[#E6F2EE] text-xs font-semibold mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#D95D39] animate-ping" />
+              <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1 rounded-full bg-white/10 text-[#E6F2EE] text-[11px] sm:text-xs font-semibold mb-3">
+                <span className="w-2 h-2 rounded-full bg-[#D95D39] animate-ping shrink-0" />
                 <span>Muro Vecinal Verificado • Presencial y En Línea</span>
               </div>
               <h2 className="font-display text-2xl sm:text-4xl font-extrabold tracking-tight">
@@ -1862,7 +1899,7 @@ export default function HomePage() {
                   solución hoy
                 </span>
               </h2>
-              <p className="text-sm sm:text-base text-[#E6F2EE]/85 mt-1.5 max-w-2xl">
+              <p className="text-xs sm:text-base text-[#E6F2EE]/85 mt-1.5 max-w-2xl">
                 Cada solicitud cuenta con modalidad clara y método de pago
                 verificable para seguridad tanto del cliente como del
                 solucionador.
@@ -1874,7 +1911,7 @@ export default function HomePage() {
                 resetHelpWizard();
                 setIsPedirAyudaModalOpen(true);
               }}
-              className="self-start md:self-auto inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm shadow-sm hover:-translate-y-0.5 transition-all active:scale-95 shrink-0"
+              className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm shadow-sm hover:-translate-y-0.5 transition-all active:scale-95 shrink-0"
             >
               <PlusCircle strokeWidth={1.75} className="w-4 h-4" />
               Publicar mi Problema
@@ -1882,11 +1919,11 @@ export default function HomePage() {
           </div>
 
           {filteredProblemas.length === 0 ? (
-            <div className="bg-[#FAFAF9] text-[#18181B] rounded-3xl p-10 text-center max-w-xl mx-auto">
-              <h3 className="font-display text-xl font-extrabold mb-2">
+            <div className="bg-[#FAFAF9] text-[#18181B] rounded-3xl p-6 sm:p-10 text-center max-w-xl mx-auto">
+              <h3 className="font-display text-lg sm:text-xl font-extrabold mb-2">
                 Aún no hay problemas publicados en esta vista
               </h3>
-              <p className="text-sm text-[#57534E] mb-6">
+              <p className="text-xs sm:text-sm text-[#57534E] mb-6 leading-relaxed">
                 ¿Necesitas arreglar algo en casa, soporte remoto en línea,
                 limpieza, un flete o un mandado hoy? Publica tu solicitud con
                 pago protegido en 1 minuto.
@@ -1896,26 +1933,26 @@ export default function HomePage() {
                   resetHelpWizard();
                   setIsPedirAyudaModalOpen(true);
                 }}
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] text-white font-bold text-sm"
               >
                 <PlusCircle strokeWidth={1.75} className="w-4 h-4" />
                 Publicar el primer problema
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
               {filteredProblemas.map((prob) => {
                 const isUrgent = prob.urgency === "Urgente (Hoy)";
                 const isOnline = prob.modality === "En Línea / Remoto";
                 return (
                   <div
                     key={prob.id}
-                    className="bg-[#FAFAF9] text-[#18181B] border border-[#E7E5E4] rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5 shadow-sm"
+                    className="bg-[#FAFAF9] text-[#18181B] border border-[#E7E5E4] rounded-3xl p-5 sm:p-7 flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5 shadow-sm"
                   >
                     <div>
-                      <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#F5F4F0] text-[#18181B] border border-[#E7E5E4]">
+                      <div className="flex flex-wrap items-center justify-between gap-2 mb-3.5 sm:mb-4">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-[#F5F4F0] text-[#18181B] border border-[#E7E5E4]">
                             {getCategoryIcon(
                               prob.category,
                               "w-3.5 h-3.5 text-[#0F4C3A]"
@@ -1923,7 +1960,7 @@ export default function HomePage() {
                             {prob.categoryLabel}
                           </span>
                           <span
-                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] sm:text-xs font-bold ${
                               isOnline
                                 ? "bg-[#E6F2EE] text-[#0F4C3A]"
                                 : "bg-[#F5F4F0] text-[#57534E]"
@@ -1933,7 +1970,7 @@ export default function HomePage() {
                             {prob.modality || "Presencial"}
                           </span>
                           <span
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
+                            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-bold ${
                               isUrgent
                                 ? "bg-[#FFF1EC] text-[#C2410C] border border-[#D95D39]/25"
                                 : "bg-[#FEF3C7] text-[#B45309] border border-amber-300/60"
@@ -1959,7 +1996,7 @@ export default function HomePage() {
                             )
                           }
                           aria-label="Estado de la solicitud"
-                          className={`text-xs font-bold px-3 py-1.5 rounded-xl border cursor-pointer focus:outline-none ${
+                          className={`text-xs font-bold px-2.5 sm:px-3 py-1.5 rounded-xl border cursor-pointer focus:outline-none ${
                             prob.status === "Resuelta"
                               ? "bg-[#E6F2EE] text-[#0F4C3A] border-[#0F4C3A]/20"
                               : prob.status === "En proceso"
@@ -1973,7 +2010,7 @@ export default function HomePage() {
                         </select>
                       </div>
 
-                      <h3 className="font-display text-lg sm:text-xl font-extrabold text-[#18181B] mb-2">
+                      <h3 className="font-display text-base sm:text-xl font-extrabold text-[#18181B] mb-2">
                         {prob.title}
                       </h3>
                       <p className="text-xs sm:text-sm text-[#57534E] leading-relaxed mb-4">
@@ -1983,9 +2020,14 @@ export default function HomePage() {
                       {/* Safe Payment & Folio Pill */}
                       <div className="mb-4 p-3 rounded-2xl bg-[#F5F4F0] border border-[#E7E5E4] flex flex-wrap items-center justify-between gap-2 text-xs">
                         <span className="inline-flex items-center gap-1.5 font-semibold text-[#0F4C3A]">
-                          <Lock strokeWidth={1.75} className="w-3.5 h-3.5" />
-                          {prob.paymentPreference ||
-                            "Pago Protegido (Se libera al terminar)"}
+                          <Lock
+                            strokeWidth={1.75}
+                            className="w-3.5 h-3.5 shrink-0"
+                          />
+                          <span>
+                            {prob.paymentPreference ||
+                              "Pago Protegido (Se libera al terminar)"}
+                          </span>
                         </span>
                         {prob.verificationCode && (
                           <span className="font-mono font-bold text-[11px] bg-white px-2.5 py-0.5 rounded-lg border border-[#E7E5E4] text-[#18181B]">
@@ -1996,13 +2038,13 @@ export default function HomePage() {
                     </div>
 
                     {/* Receipt-Style Footer with Tabular Budget */}
-                    <div className="pt-4 border-t border-[#E7E5E4] flex flex-wrap items-center justify-between gap-4">
+                    <div className="pt-4 border-t border-[#E7E5E4] flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
                       <div className="space-y-1">
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-[#57534E]">
+                        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs text-[#57534E]">
                           <span className="inline-flex items-center gap-1 font-medium text-[#18181B]">
                             <MapPin
                               strokeWidth={1.75}
-                              className="w-3.5 h-3.5 text-[#D95D39]"
+                              className="w-3.5 h-3.5 text-[#D95D39] shrink-0"
                             />
                             {prob.location}
                           </span>
@@ -2021,7 +2063,7 @@ export default function HomePage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
                         <button
                           onClick={() => {
                             setEscrowRecipient(prob.clientName);
@@ -2030,7 +2072,7 @@ export default function HomePage() {
                             setGeneratedFolio(prob.verificationCode || null);
                             setIsSafePaymentModalOpen(true);
                           }}
-                          className="p-3 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] hover:bg-[#0F4C3A] hover:text-white transition-colors"
+                          className="p-3 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] hover:bg-[#0F4C3A] hover:text-white transition-colors shrink-0"
                           title="Verificar Pago Seguro"
                         >
                           <Lock strokeWidth={1.75} className="w-4 h-4" />
@@ -2043,7 +2085,7 @@ export default function HomePage() {
                             setApplyModalProblema(prob);
                           }}
                           disabled={prob.status === "Resuelta"}
-                          className={`inline-flex items-center gap-2 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all active:scale-95 tabular-nums ${
+                          className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-bold text-xs sm:text-sm transition-all active:scale-95 tabular-nums ${
                             prob.status === "Resuelta"
                               ? "bg-[#E7E5E4] text-[#57534E] cursor-not-allowed"
                               : "bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white shadow-sm"
@@ -2071,22 +2113,22 @@ export default function HomePage() {
       {/* ===================================================================== */}
       <section
         id="pedir-ayuda"
-        className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12"
+        className="max-w-5xl mx-auto w-full px-3.5 sm:px-6 lg:px-8 py-8 sm:py-12"
       >
-        <div className="bg-white rounded-[32px] border border-[#E7E5E4] shadow-bento overflow-hidden">
-          <div className="bg-[#F5F4F0] border-b border-[#E7E5E4] px-6 py-7 sm:px-10 sm:py-9 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="bg-white rounded-3xl sm:rounded-[32px] border border-[#E7E5E4] shadow-bento overflow-hidden">
+          <div className="bg-[#F5F4F0] border-b border-[#E7E5E4] px-5 py-6 sm:px-10 sm:py-9 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#E6F2EE] text-[#0F4C3A] text-xs font-bold uppercase tracking-wider mb-2">
+              <span className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1 rounded-full bg-[#E6F2EE] text-[#0F4C3A] text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2">
                 <Lock strokeWidth={1.75} className="w-3.5 h-3.5" /> Solicitud
                 Verificada • Presencial o En Línea
               </span>
-              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight">
+              <h2 className="font-display text-xl sm:text-3xl font-extrabold text-[#18181B] tracking-tight">
                 Publica lo que necesitas en{" "}
                 <span className="font-editorial-serif italic font-normal text-[#0F4C3A] text-[1.12em]">
                   3 pasos seguros
                 </span>
               </h2>
-              <p className="text-[#57534E] text-sm mt-1">
+              <p className="text-[#57534E] text-xs sm:text-sm mt-1">
                 Elige si el servicio es a domicilio o 100% en línea y selecciona
                 tu método de pago verificable preferido.
               </p>
@@ -2101,7 +2143,7 @@ export default function HomePage() {
                     setHelpSubmittedSuccess(false);
                     setHelpStep(stepNum as 1 | 2 | 3);
                   }}
-                  className={`w-11 h-11 rounded-2xl font-display font-extrabold text-sm flex items-center justify-center transition-all ${
+                  className={`w-10 h-10 sm:w-11 sm:h-11 rounded-2xl font-display font-extrabold text-sm flex items-center justify-center transition-all ${
                     helpStep === stepNum
                       ? "bg-[#D95D39] text-white shadow-sm scale-105"
                       : helpStep > stepNum
@@ -2115,13 +2157,13 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="p-6 sm:p-10">
+          <div className="p-5 sm:p-10">
             {helpSubmittedSuccess ? (
-              <div className="text-center py-8 max-w-lg mx-auto">
+              <div className="text-center py-6 sm:py-8 max-w-lg mx-auto">
                 <div className="w-16 h-16 rounded-2xl bg-[#E6F2EE] text-[#0F4C3A] flex items-center justify-center mx-auto mb-4">
                   <CheckCircle2 strokeWidth={1.75} className="w-10 h-10" />
                 </div>
-                <h3 className="font-display text-2xl font-extrabold text-[#18181B] mb-2">
+                <h3 className="font-display text-xl sm:text-2xl font-extrabold text-[#18181B] mb-2">
                   ¡Tu solicitud verificada ya está en el Muro Vecinal!
                 </h3>
                 {helpSaveStatus && (
@@ -2129,22 +2171,22 @@ export default function HomePage() {
                     {helpSaveStatus}
                   </p>
                 )}
-                <p className="text-sm text-[#57534E] mb-6">
+                <p className="text-xs sm:text-sm text-[#57534E] mb-6">
                   Los solucionadores verán la modalidad elegida (
                   <strong>{helpModality}</strong>) y tu método de pago seguro (
                   <strong>{helpPaymentPreference}</strong>).
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3">
                   <a
                     href="#problemas"
-                    className="px-6 py-3 rounded-2xl bg-[#0F4C3A] text-white text-sm font-bold hover:bg-[#0B3B2D]"
+                    className="px-6 py-3.5 rounded-2xl bg-[#0F4C3A] text-white text-sm font-bold hover:bg-[#0B3B2D] text-center"
                   >
                     Ver mi solicitud en el Muro
                   </a>
                   <button
                     type="button"
                     onClick={resetHelpWizard}
-                    className="px-6 py-3 rounded-2xl bg-[#F5F4F0] text-[#18181B] text-sm font-semibold hover:bg-[#E7E5E4]"
+                    className="px-6 py-3.5 rounded-2xl bg-[#F5F4F0] text-[#18181B] text-sm font-semibold hover:bg-[#E7E5E4]"
                   >
                     Publicar otro problema
                   </button>
@@ -2153,12 +2195,12 @@ export default function HomePage() {
             ) : (
               <form onSubmit={handleCreateHelpRequest}>
                 {helpStep === 1 && (
-                  <div className="space-y-6">
+                  <div className="space-y-5 sm:space-y-6">
                     <div>
                       <span className="text-xs font-bold uppercase tracking-wider text-[#D95D39]">
                         Paso 1 de 3 • Modalidad y Necesidad
                       </span>
-                      <h3 className="font-display text-xl font-bold text-[#18181B] mt-0.5">
+                      <h3 className="font-display text-lg sm:text-xl font-bold text-[#18181B] mt-0.5">
                         ¿Cómo necesitas que te ayuden hoy?
                       </h3>
                     </div>
@@ -2168,11 +2210,11 @@ export default function HomePage() {
                       <label className="block text-sm font-semibold text-[#18181B] mb-2.5">
                         1. Modalidad del servicio:
                       </label>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <button
                           type="button"
                           onClick={() => setHelpModality("Presencial")}
-                          className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3.5 ${
+                          className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3 ${
                             helpModality === "Presencial"
                               ? "border-[#0F4C3A] bg-[#E6F2EE] text-[#0F4C3A] ring-2 ring-[#0F4C3A]/15"
                               : "border-[#E7E5E4] bg-[#FAFAF9] hover:bg-white text-[#18181B]"
@@ -2183,7 +2225,7 @@ export default function HomePage() {
                             className="w-5 h-5 text-[#0F4C3A] shrink-0 mt-0.5"
                           />
                           <div>
-                            <span className="font-display font-bold text-sm block text-[#18181B]">
+                            <span className="font-display font-bold text-xs sm:text-sm block text-[#18181B]">
                               🏠 Presencial (A domicilio / En ubicación)
                             </span>
                             <span className="text-xs text-[#57534E] mt-0.5 block">
@@ -2206,7 +2248,7 @@ export default function HomePage() {
                               );
                             }
                           }}
-                          className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3.5 ${
+                          className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3 ${
                             helpModality === "En Línea / Remoto"
                               ? "border-[#0F4C3A] bg-[#E6F2EE] text-[#0F4C3A] ring-2 ring-[#0F4C3A]/15"
                               : "border-[#E7E5E4] bg-[#FAFAF9] hover:bg-white text-[#18181B]"
@@ -2217,7 +2259,7 @@ export default function HomePage() {
                             className="w-5 h-5 text-[#D95D39] shrink-0 mt-0.5"
                           />
                           <div>
-                            <span className="font-display font-bold text-sm block text-[#18181B]">
+                            <span className="font-display font-bold text-xs sm:text-sm block text-[#18181B]">
                               💻 100% En Línea / Remoto (Con Pago Protegido)
                             </span>
                             <span className="text-xs text-[#57534E] mt-0.5 block">
@@ -2233,7 +2275,7 @@ export default function HomePage() {
                       <label className="block text-sm font-semibold text-[#18181B] mb-2.5">
                         2. Categoría del problema:
                       </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                      <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5 sm:gap-3">
                         {CATEGORIES.map((cat) => {
                           const active = helpCategory === cat.id;
                           return (
@@ -2241,7 +2283,7 @@ export default function HomePage() {
                               key={cat.id}
                               type="button"
                               onClick={() => setHelpCategory(cat.id)}
-                              className={`p-4 rounded-2xl border text-left transition-all flex flex-col items-start gap-2 ${
+                              className={`p-3.5 sm:p-4 rounded-2xl border text-left transition-all flex flex-col items-start gap-2 ${
                                 active
                                   ? "border-[#0F4C3A] bg-[#E6F2EE] text-[#0F4C3A] ring-2 ring-[#0F4C3A]/15"
                                   : "border-[#E7E5E4] bg-[#FAFAF9] hover:bg-white text-[#18181B]"
@@ -2293,7 +2335,7 @@ export default function HomePage() {
                       <button
                         type="button"
                         onClick={() => setHelpStep(2)}
-                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-bold text-sm transition-all active:scale-95"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-bold text-sm transition-all active:scale-95"
                       >
                         <span>Siguiente: Ubicación o Canal Digital</span>
                         <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
@@ -2303,7 +2345,7 @@ export default function HomePage() {
                 )}
 
                 {helpStep === 2 && (
-                  <div className="space-y-6">
+                  <div className="space-y-5 sm:space-y-6">
                     <div>
                       <span className="text-xs font-bold uppercase tracking-wider text-[#D95D39]">
                         Paso 2 de 3 •{" "}
@@ -2311,7 +2353,7 @@ export default function HomePage() {
                           ? "Canal En Línea y Horario"
                           : "Ubicación y Urgencia"}
                       </span>
-                      <h3 className="font-display text-xl font-bold text-[#18181B] mt-0.5">
+                      <h3 className="font-display text-lg sm:text-xl font-bold text-[#18181B] mt-0.5">
                         {helpModality === "En Línea / Remoto"
                           ? "¿Por qué medio en línea te conectas y qué tan urgente es?"
                           : "¿En qué colonia estás y qué tan urgente es?"}
@@ -2398,11 +2440,11 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2">
+                    <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2.5 pt-2">
                       <button
                         type="button"
                         onClick={() => setHelpStep(1)}
-                        className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#18181B] font-semibold text-sm"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#18181B] font-semibold text-sm"
                       >
                         <ArrowLeft strokeWidth={1.75} className="w-4 h-4" />
                         <span>Anterior</span>
@@ -2411,7 +2453,7 @@ export default function HomePage() {
                       <button
                         type="button"
                         onClick={() => setHelpStep(3)}
-                        className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-bold text-sm"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-bold text-sm"
                       >
                         <span>Siguiente: Pago Seguro y Contacto</span>
                         <ArrowRight strokeWidth={1.75} className="w-4 h-4" />
@@ -2421,12 +2463,12 @@ export default function HomePage() {
                 )}
 
                 {helpStep === 3 && (
-                  <div className="space-y-6">
+                  <div className="space-y-5 sm:space-y-6">
                     <div>
                       <span className="text-xs font-bold uppercase tracking-wider text-[#D95D39]">
                         Paso 3 de 3 • Pago Seguro Verificable y Contacto
                       </span>
-                      <h3 className="font-display text-xl font-bold text-[#18181B] mt-0.5">
+                      <h3 className="font-display text-lg sm:text-xl font-bold text-[#18181B] mt-0.5">
                         Elige cómo proteger tu pago y confirma tus datos
                       </h3>
                     </div>
@@ -2535,7 +2577,7 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    <div className="bg-[#F5F4F0] rounded-2xl p-5 border border-[#E7E5E4] text-xs sm:text-sm space-y-1.5">
+                    <div className="bg-[#F5F4F0] rounded-2xl p-4 sm:p-5 border border-[#E7E5E4] text-xs sm:text-sm space-y-1.5">
                       <p className="font-display font-bold text-[#18181B]">
                         Resumen de seguridad de tu solicitud:
                       </p>
@@ -2564,11 +2606,11 @@ export default function HomePage() {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2">
+                    <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2.5 pt-2">
                       <button
                         type="button"
                         onClick={() => setHelpStep(2)}
-                        className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#18181B] font-semibold text-sm"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-2xl bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#18181B] font-semibold text-sm"
                       >
                         <ArrowLeft strokeWidth={1.75} className="w-4 h-4" />
                         <span>Anterior</span>
@@ -2577,7 +2619,7 @@ export default function HomePage() {
                       <button
                         type="submit"
                         disabled={helpSubmitting}
-                        className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] disabled:opacity-60 text-white font-extrabold text-sm shadow-sm transition-all active:scale-95"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-[#D95D39] hover:bg-[#BF4B28] disabled:opacity-60 text-white font-extrabold text-sm shadow-sm transition-all active:scale-95"
                       >
                         <CheckCircle2 strokeWidth={1.75} className="w-5 h-5" />
                         <span>
@@ -2598,8 +2640,8 @@ export default function HomePage() {
       {/* ===================================================================== */}
       {/* EDITORIAL CALL TO ACTION BANNER FOR SOLUCIONADORES                    */}
       {/* ===================================================================== */}
-      <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="bg-[#F5F4F0] border border-[#E7E5E4] rounded-[32px] p-7 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-bento">
+      <section className="max-w-7xl mx-auto w-full px-3.5 sm:px-6 lg:px-8 pb-12 sm:pb-16">
+        <div className="bg-[#F5F4F0] border border-[#E7E5E4] rounded-3xl sm:rounded-[32px] p-6 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 shadow-bento">
           <div className="space-y-3 max-w-xl text-center md:text-left">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#E6F2EE] text-[#0F4C3A] text-xs font-bold uppercase tracking-wider">
               <Briefcase strokeWidth={1.75} className="w-3.5 h-3.5" /> Trabajo
@@ -2612,7 +2654,7 @@ export default function HomePage() {
               </span>
               ?
             </h2>
-            <p className="text-[#57534E] text-sm sm:text-base leading-relaxed">
+            <p className="text-[#57534E] text-xs sm:text-base leading-relaxed">
               Crea tu credencial verificada con tu tipo de identificación,
               años de experiencia y métodos de cobro seguro (Pago Protegido,
               SPEI con CEP o Mercado Pago).
@@ -2625,7 +2667,7 @@ export default function HomePage() {
               setRegSaveStatus(null);
               setIsRegisterSolucionadorOpen(true);
             }}
-            className="px-7 py-4 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-extrabold text-sm sm:text-base shadow-sm hover:-translate-y-0.5 transition-all shrink-0 flex items-center gap-2.5 active:scale-95"
+            className="w-full md:w-auto justify-center px-7 py-4 rounded-2xl bg-[#0F4C3A] hover:bg-[#0B3B2D] text-white font-extrabold text-sm sm:text-base shadow-sm hover:-translate-y-0.5 transition-all shrink-0 flex items-center gap-2.5 active:scale-95"
           >
             <UserPlus strokeWidth={1.75} className="w-5 h-5" />
             <span>Crear mi Credencial Verificada</span>
@@ -2635,18 +2677,22 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-white text-[#57534E] py-10 px-4 border-t border-[#E7E5E4] mt-auto">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-[#0F4C3A] flex items-center justify-center text-white">
-              <HeartHandshake strokeWidth={1.75} className="w-4 h-4" />
+      <footer className="bg-white text-[#57534E] py-8 sm:py-10 px-4 border-t border-[#E7E5E4] mt-auto">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[#0F4C3A] flex items-center justify-center text-white">
+                <HeartHandshake strokeWidth={1.75} className="w-4 h-4" />
+              </div>
+              <span className="font-display font-bold text-[#18181B] text-base">
+                Mano<span className="text-[#0F4C3A]">Amiga</span>
+              </span>
             </div>
-            <span className="font-display font-bold text-[#18181B] text-base">
-              Mano<span className="text-[#0F4C3A]">Amiga</span>
+            <span className="text-xs sm:text-sm">
+              Confianza y pago verificable en Nuevo León, México.
             </span>
-            <span>— Confianza y pago verificable en Nuevo León, México.</span>
           </div>
-          <div className="flex flex-wrap gap-6 font-medium">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 font-medium">
             <a href="#categorias" className="hover:text-[#18181B]">
               Categorías
             </a>
@@ -2669,34 +2715,41 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* MOBILE STICKY BOTTOM BAR */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-[#FAFAF9]/95 backdrop-blur-md border-t border-[#E7E5E4] px-3 py-2.5 flex items-center justify-around md:hidden shadow-lg">
+      {/* MOBILE STICKY BOTTOM DOCK (NATIVE APP FEEL ON PHONES) */}
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-[#FAFAF9]/95 backdrop-blur-md border-t border-[#E7E5E4] px-2 pt-2 pb-safe flex items-center justify-around md:hidden shadow-[0_-4px_20px_rgba(24,24,27,0.06)]">
         <a
           href="#solucionadores"
-          className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-[#57534E] hover:text-[#0F4C3A]"
+          className="flex flex-col items-center gap-0.5 py-1 px-2 text-[10px] font-semibold text-[#57534E] active:text-[#0F4C3A]"
         >
           <Search strokeWidth={1.75} className="w-5 h-5" />
           <span>Explorar</span>
         </a>
-        <button
-          onClick={() => {
-            setGeneratedFolio(null);
-            setIsSafePaymentModalOpen(true);
-          }}
-          className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-[#57534E] hover:text-[#0F4C3A]"
+        <a
+          href="#problemas"
+          className="flex flex-col items-center gap-0.5 py-1 px-2 text-[10px] font-semibold text-[#57534E] active:text-[#0F4C3A]"
         >
-          <Lock strokeWidth={1.75} className="w-5 h-5 text-[#0F4C3A]" />
-          <span>Pago Seguro</span>
-        </button>
+          <Briefcase strokeWidth={1.75} className="w-5 h-5" />
+          <span>Muro ({problemas.length})</span>
+        </a>
         <button
           onClick={() => {
             resetHelpWizard();
             setIsPedirAyudaModalOpen(true);
           }}
-          className="flex items-center gap-1.5 px-4 py-2.5 rounded-2xl bg-[#D95D39] text-white text-xs font-bold shadow-sm"
+          className="flex items-center gap-1.5 px-3.5 py-2.5 rounded-2xl bg-[#D95D39] text-white text-xs font-bold shadow-sm active:scale-95"
         >
           <PlusCircle strokeWidth={1.75} className="w-4 h-4" />
           <span>Pedir Ayuda</span>
+        </button>
+        <button
+          onClick={() => {
+            setGeneratedFolio(null);
+            setIsSafePaymentModalOpen(true);
+          }}
+          className="flex flex-col items-center gap-0.5 py-1 px-2 text-[10px] font-semibold text-[#0F4C3A]"
+        >
+          <Lock strokeWidth={1.75} className="w-5 h-5" />
+          <span>Pago Seguro</span>
         </button>
         <button
           onClick={() => {
@@ -2704,7 +2757,7 @@ export default function HomePage() {
             setRegSaveStatus(null);
             setIsRegisterSolucionadorOpen(true);
           }}
-          className="flex flex-col items-center gap-0.5 text-[11px] font-semibold text-[#57534E] hover:text-[#0F4C3A]"
+          className="flex flex-col items-center gap-0.5 py-1 px-2 text-[10px] font-semibold text-[#57534E] active:text-[#0F4C3A]"
         >
           <UserPlus strokeWidth={1.75} className="w-5 h-5" />
           <span>Soy Experto</span>
@@ -2715,8 +2768,8 @@ export default function HomePage() {
       {/* MODAL ESPECIAL: CENTRO DE PAGO SEGURO Y VERIFICACIÓN SPEI */}
       {/* ========================================================= */}
       {isSafePaymentModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl border border-[#E7E5E4] max-w-xl w-full p-5 sm:p-8 shadow-2xl relative max-h-[92dvh] overflow-y-auto">
             <button
               onClick={() => setIsSafePaymentModalOpen(false)}
               className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
@@ -3045,8 +3098,8 @@ export default function HomePage() {
       {/* MODAL 0: AUTENTICACIÓN (LOGIN / REGISTRO)                 */}
       {/* ========================================================= */}
       {isAuthModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl border border-[#E7E5E4] max-w-md w-full p-5 sm:p-8 shadow-2xl relative max-h-[92dvh] overflow-y-auto">
             <button
               onClick={() => setIsAuthModalOpen(false)}
               className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
@@ -3181,8 +3234,8 @@ export default function HomePage() {
       {/* MODAL 1: CREDENCIAL DETALLADA DEL SOLUCIONADOR + RESEÑAS  */}
       {/* ========================================================= */}
       {selectedSolucionador && (
-        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-lg w-full p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl border border-[#E7E5E4] max-w-lg w-full p-5 sm:p-8 shadow-2xl relative max-h-[92dvh] overflow-y-auto">
             <button
               onClick={() => setSelectedSolucionador(null)}
               className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
@@ -3374,8 +3427,8 @@ export default function HomePage() {
       {/* MODAL 2: CONTACTAR SOLUCIONADOR                           */}
       {/* ========================================================= */}
       {contactModalSolucionador && (
-        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl border border-[#E7E5E4] max-w-md w-full p-5 sm:p-8 shadow-2xl relative max-h-[92dvh] overflow-y-auto">
             <button
               onClick={() => setContactModalSolucionador(null)}
               className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
@@ -3494,8 +3547,8 @@ export default function HomePage() {
       {/* MODAL 3: POSTULARSE A UN PROBLEMA ("YO TE AYUDO")          */}
       {/* ========================================================= */}
       {applyModalProblema && (
-        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl border border-[#E7E5E4] max-w-md w-full p-5 sm:p-8 shadow-2xl relative max-h-[92dvh] overflow-y-auto">
             <button
               onClick={() => setApplyModalProblema(null)}
               className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
@@ -3635,8 +3688,8 @@ export default function HomePage() {
       {/* MODAL 4: REGISTRARSE COMO SOLUCIONADOR (CONFIANZA + PAGO)  */}
       {/* ========================================================= */}
       {isRegisterSolucionadorOpen && (
-        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl border border-[#E7E5E4] max-w-2xl w-full p-5 sm:p-8 shadow-2xl relative max-h-[92dvh] overflow-y-auto">
             <button
               onClick={() => setIsRegisterSolucionadorOpen(false)}
               className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
@@ -3965,8 +4018,8 @@ export default function HomePage() {
       {/* MODAL 5: ATAJO RÁPIDO "PEDIR AYUDA" (3 PASOS EN MODAL)    */}
       {/* ========================================================= */}
       {isPedirAyudaModalOpen && (
-        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl border border-[#E7E5E4] max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+        <div className="fixed inset-0 z-50 bg-[#18181B]/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-white rounded-t-3xl sm:rounded-3xl border border-[#E7E5E4] max-w-xl w-full p-5 sm:p-8 shadow-2xl relative max-h-[92dvh] overflow-y-auto">
             <button
               onClick={() => setIsPedirAyudaModalOpen(false)}
               className="absolute top-5 right-5 p-2 rounded-full bg-[#F5F4F0] hover:bg-[#E7E5E4] text-[#57534E]"
