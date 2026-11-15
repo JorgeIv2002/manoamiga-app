@@ -961,21 +961,22 @@ export default function HomePage() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/15 border border-blue-400/30 text-blue-300 text-xs sm:text-sm font-medium mb-6">
             <Sparkles className="w-4 h-4 text-amber-400" />
             <span>
-              Desde arreglar una llave de agua hasta hacer las compras del día
+              📍 Operando en Monterrey y toda el Área Metropolitana de Nuevo León
             </span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-5">
-            Encuentra ayuda confiable{" "}
+            ¿Un imprevisto en casa o falta de tiempo?{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-              para cualquier problema hoy
+              Resuélvelo hoy con manos de confianza
             </span>
           </h1>
 
           <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed">
-            Conectamos al instante a personas que necesitan solucionar algo en
-            casa o en su día a día con expertos y ayudantes locales calificados
-            por tu comunidad.
+            Desde una fuga de agua, mantenimiento de minisplit o limpieza
+            profunda, hasta un flete o las compras del súper. Conecta en minutos
+            con solucionadores verificados cerca de tu colonia, sin comisiones
+            ocultas y a precio justo.
           </p>
 
           {/* MAIN SEARCH BAR */}
@@ -987,7 +988,7 @@ export default function HomePage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="¿Con qué necesitas ayuda hoy? (Ej. plomero, mudanza, limpieza, Wi-Fi...)"
+                  placeholder="¿Qué necesitas resolver hoy? (Ej. plomero, minisplit, flete, limpieza, H-E-B...)"
                   className="w-full text-sm sm:text-base bg-transparent text-slate-900 placeholder-slate-400 focus:outline-none"
                 />
                 {searchQuery && (
@@ -1004,7 +1005,7 @@ export default function HomePage() {
                 href="#solucionadores"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm sm:text-base transition-all shadow-md shadow-blue-600/25 shrink-0"
               >
-                <span>Buscar Ayuda</span>
+                <span>Encontrar Solucionador</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
             </div>
@@ -1013,15 +1014,15 @@ export default function HomePage() {
           {/* Quick Popular Tags */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-xs text-slate-300">
             <span className="text-slate-400 font-medium">
-              Búsquedas frecuentes:
+              Lo más pedido en Nuevo León:
             </span>
             {[
-              { label: "🔧 Fuga de agua", query: "fuga" },
-              { label: "✨ Limpieza profunda", query: "limpieza" },
-              { label: "🚚 Flete / Mudanza", query: "mudanza" },
-              { label: "🛒 Mandados y Súper", query: "compras" },
-              { label: "💻 Configurar Wi-Fi", query: "Wi-Fi" },
-              { label: "🪑 Armar muebles", query: "muebles" },
+              { label: "❄️ Mantenimiento Minisplit", query: "minisplit" },
+              { label: "🔧 Plomería y Fugas", query: "fuga" },
+              { label: "✨ Limpieza Profunda", query: "limpieza" },
+              { label: "🚚 Fletes y Mudanzas", query: "camioneta" },
+              { label: "🛒 Mandados / H-E-B", query: "H-E-B" },
+              { label: "💻 Redes Wi-Fi Mesh", query: "Wi-Fi" },
             ].map((tag) => (
               <button
                 key={tag.label}
@@ -1043,9 +1044,11 @@ export default function HomePage() {
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">100% Confiable</p>
+                <p className="text-sm font-bold text-white">
+                  Seguridad Primero
+                </p>
                 <p className="text-xs text-slate-400">
-                  Identidad y reseñas reales verificadas
+                  Identidad verificada y reseñas de vecinos reales
                 </p>
               </div>
             </div>
@@ -1055,10 +1058,10 @@ export default function HomePage() {
               </div>
               <div>
                 <p className="text-sm font-bold text-white">
-                  Atención Hoy Mismo
+                  Respuesta en &lt; 10 Min
                 </p>
                 <p className="text-xs text-slate-400">
-                  Solucionadores listos en tu colonia
+                  Solucionadores activos en todo Nuevo León
                 </p>
               </div>
             </div>
@@ -1067,9 +1070,11 @@ export default function HomePage() {
                 <Award className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-sm font-bold text-white">Precios Claros</p>
+                <p className="text-sm font-bold text-white">
+                  Trato Directo y Justo
+                </p>
                 <p className="text-xs text-slate-400">
-                  Acuerda la tarifa antes de empezar
+                  Acuerda el precio exacto antes de iniciar
                 </p>
               </div>
             </div>
@@ -1909,15 +1914,16 @@ export default function HomePage() {
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-6 sm:p-10 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
           <div className="space-y-2 max-w-xl text-center md:text-left">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-bold uppercase tracking-wider">
-              <Briefcase className="w-3.5 h-3.5" /> Genera ingresos extra en tu
-              zona
+              <Briefcase className="w-3.5 h-3.5" /> Convierte tus habilidades en
+              clientes diarios en Nuevo León
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold">
-              ¿Sabes reparar cosas, limpiar, mover muebles o hacer mandados?
+              ¿Eres plomero, técnico, haces limpieza, fletes o mandados?
             </h2>
             <p className="text-blue-100 text-sm sm:text-base">
-              Regístrate gratis como Solucionador, guarda tu perfil en la base
-              de datos y ayuda a tus vecinos cuando tengas tiempo libre.
+              Anúnciate gratis en ManoAmiga, recibe solicitudes directas en tu
+              WhatsApp y quédate con el 100% de tu trabajo. Tú eliges tus zonas
+              y tus tarifas.
             </p>
           </div>
 
@@ -1930,7 +1936,7 @@ export default function HomePage() {
             className="px-6 py-4 rounded-2xl bg-white hover:bg-blue-50 text-blue-700 font-extrabold text-sm sm:text-base shadow-lg transition-all shrink-0 flex items-center gap-2"
           >
             <UserPlus className="w-5 h-5" />
-            <span>Crear mi Perfil de Solucionador</span>
+            <span>Registrarme Gratis como Solucionador</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
